@@ -1,0 +1,236 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<body>
+		<h1>Test...</h1>
+
+		<div style='border:1px solid black;width:50%'>
+			<span id='e1' class='goofyTextEditable'>Lorem ipsum aliqua proident veniam et quis consectetur esse dolore non Ut nulla dolor eu culpa. Lorem ipsum sint cupidatat non et adipisicing esse elit officia. 
+			proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </span><span style='background-color:blue'>I Am some sort of inline object representation--not text editable. k?</span> <span id='e2' class='goofyTextEditable' style='display:inline;'> Aaaaa bbbbbb ccccc dddddd eeeeee jjjjjj kkkkkk labore et dolore magna alnt o anim id est laborum. </span>
+		</div> 
+	</body>
+
+	<script type="text/javascript" src="../../ext_3_2_1/adapter/ext/ext-base-debug.js"></script>
+	<script type="text/javascript" src="../../ext_3_2_1/ext-all-debug.js"></script>
+
+	<script type='text/javascript'>
+
+		goofyText = {
+
+			cursorHistory: []
+			, cursorNextColor: 'black'
+			, cursorblackCycles: 0
+			, suppressClearChar: false
+			, targetChar: false
+
+			, clearFlipHistory: function(){
+
+				for (var i=0;i<goofyText.cursorHistory.length; ++i){
+
+					goofyText.cursorHistory[i].setStyle('border-left', 'inherit');
+					goofyText.cursorHistory[i].setStyle('margin-left', 'inherit');
+				}
+			}
+
+			, flipCursor: function(singleFire){
+				if (singleFire){
+					goofyText.cursorblackCycles=3;
+					goofyText.cursorNextColor='black';
+
+					console.log("Single fired")
+					
+				}
+
+				if (goofyText.targetChar && goofyText.targetChar.setStyle){
+					
+					if (goofyText.cursorblackCycles){
+						goofyText.cursorNextColor = 'black';
+						goofyText.cursorblackCycles--;
+						console.log(goofyText.cursorblackCycles);
+					}
+
+					goofyText.targetChar.setStyle('border-left', '2px solid '+goofyText.cursorNextColor);
+					goofyText.targetChar.setStyle('margin-left', '-2px');
+
+					goofyText.cursorNextColor= goofyText.cursorNextColor==='white'?'black':'white';
+				}
+				if (!singleFire) setTimeout( goofyText.flipCursor, 500 )
+			}
+
+			, init: function(){
+					Ext.getDoc().on('click', function(){ 
+						
+						goofyText.clearFlipHistory();
+
+						if (!goofyText.suppressClearChar){
+							goofyText.targetChar = null;
+							
+						}else{
+							goofyText.suppressClearChar = false;
+						}
+					});				
+
+					goofyText.flipCursor();
+
+					document.onkeypress = function(evt){
+						if (!goofyText.targetChar) return;
+
+						var evt = evt || window.event
+						var chr = String.fromCharCode(evt.keyCode || evt.which)
+						var newChrNode = document.createElement('span')
+						newChrNode.className = 'chr';
+
+						if (chr){
+							newChrNode.innerHTML = chr;
+							goofyText.targetChar.dom.parentNode.insertBefore(newChrNode, goofyText.targetChar.dom);
+							goofyText.setClick(newChrNode);
+							goofyText.targetChar.dom.click();
+						}
+						console.log("keycode: "+evt.keyCode+" => "+ chr);
+
+					}
+
+					document.onkeydown = function(evt){
+						if (!goofyText.targetChar) return;
+
+						var evt = evt || window.event
+						var chr = String.fromCharCode(evt.keyCode)
+
+
+
+						switch (evt.keyCode){
+							case 8: // backspace
+								
+								// Stupid thing to stop the browser from going back.
+								evt.keyCode = 0;
+								
+								break;
+
+							case 9: // tab
+								goofyText.targetChar = null;
+
+								break;
+
+							case 37: // left
+								var search = goofyText.targetChar.dom;
+								while (search !== null){
+									search = search.previousSibling;
+									if (search && search.className === 'chr'){
+										search.click();
+										break;
+									}
+								}
+
+								break;
+
+							case 39: // right
+								var search = goofyText.targetChar.dom;
+								while (search !== null){
+									search = search.nextSibling;
+									if (search && search.className === 'chr'){
+										search.click();
+										break;
+									}
+								}
+
+								break;
+
+
+						}
+
+						console.log("onkeydown keycode: "+evt.keyCode+" => "+ chr);
+					}
+			}
+
+			, searchAndSetup: function(){
+				Ext.each(Ext.query('.goofyTextEditable'), function(){
+					goofyText.setup(Ext.get(this));
+				});
+			}
+
+			, setup: function(node){
+				if (node.goofyTextSetup) return false;
+				node.goofyTextSetup = true;
+
+				var placeHolder	= document.createElement('div');
+				var throwAway 	= document.createElement('div');
+				var chr 		= null;
+
+				
+				// Find textNodes and explode them into goofyText chrs.
+				// Other nodes will just be reused verbatim.
+				// All of these things will be pushed onto the placeHolder element.
+				while (node.dom.childNodes.length){
+					var cNode = node.dom.childNodes[0];
+
+					if (!cNode) return false;
+					
+					if (cNode.nodeType===3){
+						// It's a text node, break it up int chrs
+						for (var i=0; i<cNode.length; ++i){
+
+							chr = document.createElement('span');
+							chr.className += 'chr';
+
+							if (cNode.textContent){
+								chr.innerHTML = cNode.textContent[i];
+
+							} else if (cNode.nodeValue){
+								chr.innerHTML = cNode.nodeValue[i];
+
+							} else {
+								throw "What am I supposed to do?"
+							}
+
+							placeHolder.appendChild(chr);
+						}
+						throwAway.appendChild(cNode);
+					}
+					else {
+						placeHolder.appendChild(cNode);
+					}
+				}
+
+				// Move all the children filed into placeHolder back into the
+				// original element.
+				while (placeHolder.childNodes.length){
+					node.dom.appendChild(placeHolder.childNodes[0]);
+				}
+
+
+				// Add clicks to each char
+				Ext.each(node.query('span.chr'), function(){
+				 	goofyText.setClick(this);
+				});
+
+			}
+
+			, setClick: function(node){
+				Ext.get(node).on('click', function(){
+				  	goofyText.targetChar = this;
+				  	goofyText.cursorHistory.push(this);
+				  	goofyText.suppressClearChar = true;
+				  	console.log("Flippin yo");
+				  	goofyText.flipCursor(true);
+			 	});				
+			}
+
+			, mkChar: function(character){
+				var chr = document.createElement('span')
+				chr.className = 'chr'
+
+
+			}
+
+
+		}
+
+		goofyText.init();
+		goofyText.searchAndSetup();
+
+
+
+	</script>
+
+</html>
