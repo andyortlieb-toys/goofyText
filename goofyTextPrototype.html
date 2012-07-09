@@ -22,6 +22,7 @@
 			, cursorNextColor: 'black'
 			, cursorblackCycles: 0
 			, suppressClearChar: false
+			, suppressNextKeypress: false
 			, targetChar: false
 
 			, clearFlipHistory: function(){
@@ -37,9 +38,6 @@
 				if (singleFire){
 					goofyText.cursorblackCycles=3;
 					goofyText.cursorNextColor='black';
-
-					console.log("Single fired")
-					
 				}
 
 				if (goofyText.targetChar && goofyText.targetChar.setStyle){
@@ -47,7 +45,6 @@
 					if (goofyText.cursorblackCycles){
 						goofyText.cursorNextColor = 'black';
 						goofyText.cursorblackCycles--;
-						console.log(goofyText.cursorblackCycles);
 					}
 
 					goofyText.targetChar.setStyle('border-left', '2px solid '+goofyText.cursorNextColor);
@@ -75,19 +72,21 @@
 
 					document.onkeypress = function(evt){
 						if (!goofyText.targetChar) return;
+						if (goofyText.suppressNextKeypress) return;
+
+						// Figure out other reasons to get out of this place.
 
 						var evt = evt || window.event
 						var chr = String.fromCharCode(evt.keyCode || evt.which)
-						var newChrNode = document.createElement('span')
-						newChrNode.className = 'chr';
+						var newChrNode;
+
 
 						if (chr){
-							newChrNode.innerHTML = chr;
+							newChrNode = goofyText.mkChar(chr);
 							goofyText.targetChar.dom.parentNode.insertBefore(newChrNode, goofyText.targetChar.dom);
 							goofyText.setClick(newChrNode);
 							goofyText.targetChar.dom.click();
 						}
-						console.log("keycode: "+evt.keyCode+" => "+ chr);
 
 					}
 
@@ -97,22 +96,29 @@
 						var evt = evt || window.event
 						var chr = String.fromCharCode(evt.keyCode)
 
-
-
 						switch (evt.keyCode){
 							case 8: // backspace
+								var search = goofyText.targetChar.dom.previousSibling;
+								
+								if (search && search.className === 'chr'){
+									goofyText.targetChar.dom.parentNode.removeChild(search)
+								}
 								
 								// Stupid thing to stop the browser from going back.
 								evt.keyCode = 0;
-								
+
+								goofyText.suppressNextKeypress=true;
 								break;
 
 							case 9: // tab
 								goofyText.targetChar = null;
 
+								goofyText.suppressNextKeypress=true;
 								break;
 
 							case 37: // left
+
+								console.log ("Going left")
 								var search = goofyText.targetChar.dom;
 								while (search !== null){
 									search = search.previousSibling;
@@ -122,9 +128,14 @@
 									}
 								}
 
+								evt.preventDefault()
+
+								goofyText.suppressNextKeypress=true;
 								break;
 
 							case 39: // right
+
+								console.log ("Going right")
 								var search = goofyText.targetChar.dom;
 								while (search !== null){
 									search = search.nextSibling;
@@ -134,12 +145,15 @@
 									}
 								}
 
+								goofyText.suppressNextKeypress=true;
 								break;
+
+							default:
+								goofyText.suppressNextKeypress=false;
 
 
 						}
 
-						console.log("onkeydown keycode: "+evt.keyCode+" => "+ chr);
 					}
 			}
 
@@ -170,14 +184,11 @@
 						// It's a text node, break it up int chrs
 						for (var i=0; i<cNode.length; ++i){
 
-							chr = document.createElement('span');
-							chr.className += 'chr';
-
 							if (cNode.textContent){
-								chr.innerHTML = cNode.textContent[i];
+								chr = goofyText.mkChar(cNode.textContent[i]);
 
 							} else if (cNode.nodeValue){
-								chr.innerHTML = cNode.nodeValue[i];
+								chr = goofyText.mkChar(cNode.nodeValue[i]);
 
 							} else {
 								throw "What am I supposed to do?"
@@ -211,14 +222,21 @@
 				  	goofyText.targetChar = this;
 				  	goofyText.cursorHistory.push(this);
 				  	goofyText.suppressClearChar = true;
-				  	console.log("Flippin yo");
 				  	goofyText.flipCursor(true);
 			 	});				
 			}
 
 			, mkChar: function(character){
 				var chr = document.createElement('span')
+				//if ( character ===' ' ) character = '&nbsp;';
 				chr.className = 'chr'
+				if (chr.textContent!==undefined){
+					chr.textContent = character;
+				} else {
+					chr.innerText = character;
+				}
+
+				return chr
 
 
 			}
