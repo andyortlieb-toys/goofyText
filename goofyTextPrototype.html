@@ -28,7 +28,7 @@
 
 
 			, clearFlipHistory: function(){
-				console.log("Clearing...")
+
 				for (var i=0;i<goofyText.cursorHistory.length; ++i){
 
 					if (goofyText.cursorHistory[i] === goofyText.targetChar) continue;
@@ -39,7 +39,7 @@
 			}
 
 			, cursorFlip: function(){
-				console.log("cursorFlip", goofyText.cursorNextColor)
+				
 				goofyText.clearFlipHistory();
 
 				if (goofyText.targetChar && goofyText.targetChar.setStyle){
