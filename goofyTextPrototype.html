@@ -64,7 +64,8 @@
 
 
 			, init: function(){
-					Ext.getDoc().on('click', function(){ 
+					Ext.getDoc().on('click', function(){
+						setTimeout( goofyText.clearFlipHistory, 50) // Less delay for "blurring" the field.
 						if (!goofyText.suppressClearChar){
 							goofyText.targetChar = null;
 							
