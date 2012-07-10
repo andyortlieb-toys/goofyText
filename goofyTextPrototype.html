@@ -80,6 +80,7 @@
 						var chr = String.fromCharCode(evt.keyCode || evt.which)
 						var newChrNode;
 
+						if (evt.keyCode===13){ chr = '\n' }
 
 						if (chr){
 							newChrNode = goofyText.mkChar(chr);
@@ -228,12 +229,18 @@
 
 			, mkChar: function(character){
 				var chr = document.createElement('span')
-				//if ( character ===' ' ) character = '&nbsp;';
 				chr.className = 'chr'
-				if (chr.textContent!==undefined){
-					chr.textContent = character;
+
+				if ( character ==='\n' ) {
+					chr.innerHTML = "<br />"
+
 				} else {
-					chr.innerText = character;
+					if (chr.textContent!==undefined){
+						chr.textContent = character;
+					} else {
+						chr.innerText = character;
+					}
+					
 				}
 
 				return chr
