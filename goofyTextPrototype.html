@@ -39,7 +39,7 @@
 			}
 
 			, cursorFlip: function(){
-				
+
 				goofyText.clearFlipHistory();
 
 				if (goofyText.targetChar && goofyText.targetChar.setStyle){
@@ -49,12 +49,12 @@
 						goofyText.cursorblackCycles--;
 					}
 
-					goofyText.targetChar.setStyle('border-left', '2px solid '+goofyText.cursorNextColor);
-					goofyText.targetChar.setStyle('margin-left', '-2px');
+					goofyText.targetChar.setStyle('border-left', '1px solid '+goofyText.cursorNextColor);
+					goofyText.targetChar.setStyle('margin-left', '-1px');
 
 					goofyText.cursorNextColor= goofyText.cursorNextColor==='white'?'black':'white';
 					clearTimeout(goofyText.cursorTimeoutId);
-					goofyText.cursorTimeoutId = setTimeout( goofyText.cursorFlip, 1000 )
+					goofyText.cursorTimeoutId = setTimeout( goofyText.cursorFlip, 480 )
 				} else {
 					goofyText.cursorNextColor = 'black';
 				}
