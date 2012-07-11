@@ -110,6 +110,7 @@
 			,off : off
 			,cursorHistoryClear : cursorHistoryClear
 			,cursorCycle : cursorCycle
+			,eval: function(str){ eval(str); }
 	 	}
 		console.log("Loaded GoofyText")	
 		 	
