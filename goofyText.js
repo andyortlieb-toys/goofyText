@@ -122,7 +122,7 @@
 			cursor = this;
 			cursorHistory.push(this);
 			cursorCycleNextColor = 'black';
-			cursorCycle();
+			cursorCycle(true);
 		});
 
 		return chr;
