@@ -195,10 +195,13 @@
 		if (inputSuppressNextKeypress) return;
 
 		// Figure out other reasons to get out of this place.
-
 		var evt = evt || window.event
 		var chr = String.fromCharCode(evt.keyCode || evt.which)
 		var newChrNode;
+
+
+		console.log("keypress", evt.keyCode)
+
 
 		if (evt.keyCode===13){ chr = '\n' }
 
@@ -217,12 +220,13 @@
 
 		var evt = evt || window.event
 		var chr = String.fromCharCode(evt.keyCode)
+		console.log("keydown", evt.keyCode);
 		
 		switch (evt.keyCode){
 			case 8: // backspace
 				var search = cursor.previousSibling;
 				
-				if (search && search.className === 'chr'){
+				if (search){
 					cursor.parentNode.removeChild(search)
 				}
 				
@@ -244,7 +248,7 @@
 				var search = cursor;
 				while (search !== null){
 					search = search.previousSibling;
-					if (search && search.className === 'chr'){
+					if (search){
 						search.click();
 						break;
 					}
@@ -261,7 +265,7 @@
 				var search = cursor;
 				while (search !== null){
 					search = search.nextSibling;
-					if (search && search.className === 'chr'){
+					if (search){
 						search.click();
 						break;
 					}
@@ -273,7 +277,7 @@
 			case 46: // del
 				var search = cursor.nextSibling;
 				
-				if (search && search.className === 'chr'){
+				if (search){
 					cursor.parentNode.removeChild(search)
 				}
 				
