@@ -73,17 +73,13 @@
 	 * cycles the cursor, wherever it may be
 	 */
 	function cursorCycle(update){
-		console.log('cursorCycle');
+		
 		cursorHistoryClear();
 
 		// Set the cursor color
 		if (cursor && cursor.style){
 
-			if (update){
-				cursorCycleNextColor = 'black';
-			} else {
-				cursorCycleNextColor= cursorCycleNextColor==='white'?'black':'white';
-			}
+			cursorCycleNextColor= update||(cursorCycleNextColor==='white')?'black':'white';
 
 			cursor.style.borderLeft =  '1px solid '+cursorCycleNextColor;
 			cursor.style.borderLeft = '-1px';
@@ -91,15 +87,7 @@
 
 		clearTimeout(cursorCycleTimeout);
 
-		// Loop forever
-		if (update){
-			cursorCycleTimeout = setTimeout( cursorCycle, 960 )
-
-		} else {
-			cursorCycleTimeout = setTimeout( cursorCycle, 480 )
-
-		}
-
+		cursorCycleTimeout = setTimeout( cursorCycle, update?960:480 )
 
 	}
 
