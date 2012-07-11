@@ -113,6 +113,7 @@
 
 						var evt = evt || window.event
 						var chr = String.fromCharCode(evt.keyCode)
+						console.log("keydown", evt.keyCode)
 
 						switch (evt.keyCode){
 							case 8: // backspace
@@ -164,6 +165,19 @@
 								}
 
 								goofyText.suppressNextKeypress=true;
+								break;
+
+							case 46: // del
+								var search = goofyText.targetChar.nextSibling;
+								
+								if (search && search.className === 'chr'){
+									goofyText.targetChar.parentNode.removeChild(search)
+								}
+								
+								// Stupid thing to stop the browser from going back.
+								evt.keyCode = 0;								
+
+								goofyText.suppressNextKeypress = true;
 								break;
 
 							default:
