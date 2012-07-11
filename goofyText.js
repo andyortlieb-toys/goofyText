@@ -77,7 +77,7 @@
 		for (var i=0;i<cursorHistory.length; ++i){
 			if (cursorHistory[i] === cursor) continue;
 			cursorHistory[i].style.borderLeft = 'inherit';
-			cursorHistory[i].style.borderLeft = 'inherit';
+			cursorHistory[i].style.marginLeft = 'inherit';
 		}
 	}
 
@@ -94,7 +94,7 @@
 			cursorCycleNextColor= update||(cursorCycleNextColor==='white')?'black':'white';
 
 			cursor.style.borderLeft =  '1px solid '+cursorCycleNextColor;
-			cursor.style.borderLeft = '-1px';
+			cursor.style.marginLeft = '-1px';
 		}
 
 		clearTimeout(cursorCycleTimeout);
@@ -240,6 +240,14 @@
 				cursor = null;
 
 				inputSuppressNextKeypress=true;
+				break;
+
+			case 35: // End
+
+				break;
+
+			case 36: // Home
+
 				break;
 
 			case 37: // left
