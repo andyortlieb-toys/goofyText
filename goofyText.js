@@ -1,9 +1,5 @@
 ;(function(){
 
-
-	// End public declarations
-
-	
 	// Private declarations
 	var 
 		/**
@@ -95,7 +91,6 @@
 
 		// Set the cursor color
 		if (cursor && cursor.style){
-
 			cursorCycleNextColor= update||(cursorCycleNextColor==='white')?'black':'white';
 
 			cursor.style.borderLeft =  '1px solid '+cursorCycleNextColor;
@@ -104,8 +99,33 @@
 
 		clearTimeout(cursorCycleTimeout);
 
-		cursorCycleTimeout = setTimeout( cursorCycle, update?960:480 )
+		cursorCycleTimeout = setTimeout( cursorCycle, update?960:480 );
+	}
 
+	function mkChar (character){
+		var chr = document.createElement('span')
+
+		if ( character ==='\n' ) {
+			chr.innerHTML = "<br />";
+			chr.isNewLine = true;
+
+		} else {
+			if (chr.textContent!==undefined){
+				chr.textContent = character;
+			} else {
+				chr.innerText = character;
+			}
+			
+		}
+
+		on.call(chr, 'click', function(){
+			cursor = this;
+			cursorHistory.push(this);
+			cursorCycleNextColor = 'black';
+			cursorCycle();
+		});
+
+		return chr;
 	}
 
 	/**
@@ -116,7 +136,58 @@
 		if (el.goofyTextInitialized) return;
 		el.goofyTextInitialized = true;
 
-		console.log("Stub: convert any existing text")
+		if (el.goofyTextSetup) return false;
+		el.goofyTextSetup = true;
+
+		var placeHolder	= document.createElement('div');
+		var throwAway 	= document.createElement('div');
+		var chr 		= null;
+
+		
+		// Find textNodes and explode them into goofyText chrs.
+		// Other nodes will just be reused verbatim.
+		// All of these things will be pushed onto the placeHolder element.
+		while (el.childNodes.length){
+			var cNode = el.childNodes[0];
+
+			if (!cNode) return false;
+			
+			if (cNode.nodeType===3){
+				// It's a text el, break it up int chrs
+				for (var i=0; i<cNode.length; ++i){
+
+					if (cNode.textContent){
+						chr = mkChar(cNode.textContent[i]);
+
+					} else if (cNode.nodeValue){
+						chr = mkChar(cNode.nodeValue[i]);
+
+					} else {
+						throw "What am I supposed to do?"
+					}
+
+					placeHolder.appendChild(chr);
+				}
+				throwAway.appendChild(cNode);
+			}
+			else {
+				placeHolder.appendChild(cNode);
+			}
+		}
+
+		// Move all the children filed into placeHolder back into the
+		// original element.
+		while (placeHolder.childNodes.length){
+			el.appendChild(placeHolder.childNodes[0]);
+		}
+
+
+		// Add clicks to each char
+		var chrList = el.querySelectorAll('span.chr');
+
+		for (var iChr=0; iChr<chrList.length; ++iChr){
+		 	goofyText.setClick(chrList[iChr]);
+		};		
 	}
 
 	function handleKeypress (evt){
@@ -132,9 +203,8 @@
 		if (evt.keyCode===13){ chr = '\n' }
 
 		if (chr){
-			newChrNode = goofyText.mkChar(chr);
+			newChrNode = mkChar(chr);
 			cursor.parentNode.insertBefore(newChrNode, cursor);
-			goofyText.setClick(newChrNode);
 
 			// FIXME: Since switching away from Ext, this doesn't solve the issue anymore.
 			cursor.click();
@@ -221,8 +291,6 @@
 
 	}
 
-
-
 	// Public declarations
 
 	/** 
@@ -238,13 +306,14 @@
 			}
 
 		} else {
-
 			var element = document.createElement("DIV");
 			initializeGoofyTextElement(element);
 			return element;
 
 		}
 	}
+
+	// End public declarations
 
 
 	/****************************************
