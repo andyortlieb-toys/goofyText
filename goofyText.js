@@ -14,6 +14,7 @@
 		,cursorCycleTimeout
 		,cursorCycleNextColor = 'black'
 		,cursorHistory = []
+		,inputSuppressNextKeypress
 
 	; // End private declarations
 
@@ -21,13 +22,13 @@
 	 * private method eventManager
 	 */
 	function eventManager(obj, eventName){
-		var salvage = obj['on'+eventName];
 
 		obj['on'+eventName] = function(){
 			for (var i=0; i<this.goofyTextListeners[eventName].length; ++i){
 				this.goofyTextListeners[eventName][i].apply(this, arguments);
 			}
 		}
+		obj['on'+eventName].goofyTextEventManager = true
 	}
 
 	/**
@@ -35,8 +36,12 @@
 	 * enables events, intended for DOM objects.	 
 	 */
 	function on(evtName, callBack){
+		var salvage = this['on'+evtName];
+
 		if (this===document && !this.goofyTextListeners) this.goofyTextListeners = {};
-		if (this===document && !this.goofyTextListeners[evtName]) this.goofyTextListeners[evtName] = eventManager(this, evtName)
+		if (this===document && !this.goofyTextListeners[evtName]) this.goofyTextListeners[evtName] = eventManager(this, evtName);
+		if (salvage && ! salvage.goofyTextEventManager) on.call(this, evtName, callBack)
+
 
 		if (this.goofyTextListeners) {
 			if (!this.goofyTextListeners[evtName]) this.goofyTextListeners[evtName] = [];
@@ -114,15 +119,35 @@
 		console.log("Stub: convert any existing text")
 	}
 
+	function handleKeypress (evt){
+		if (!cursor) return;
+		if (inputSuppressNextKeypress) return;
+
+		// Figure out other reasons to get out of this place.
+
+		var evt = evt || window.event
+		var chr = String.fromCharCode(evt.keyCode || evt.which)
+		var newChrNode;
+
+		if (evt.keyCode===13){ chr = '\n' }
+
+		if (chr){
+			newChrNode = goofyText.mkChar(chr);
+			cursor.parentNode.insertBefore(newChrNode, cursor);
+			goofyText.setClick(newChrNode);
+
+			// FIXME: Since switching away from Ext, this doesn't solve the issue anymore.
+			cursor.click();
+		}
+
+	}
 
 	function handleKeydown (evt){ 
-		console.log('handleKeyDown');
 		if (!cursor) return;
 
 		var evt = evt || window.event
 		var chr = String.fromCharCode(evt.keyCode)
-		console.log("keydown", evt.keyCode)
-
+		
 		switch (evt.keyCode){
 			case 8: // backspace
 				var search = cursor.previousSibling;
@@ -134,13 +159,13 @@
 				// Stupid thing to stop the browser from going back.
 				evt.keyCode = 0;
 
-				goofyText.suppressNextKeypress=true;
+				inputSuppressNextKeypress=true;
 				break;
 
 			case 9: // tab
 				cursor = null;
 
-				goofyText.suppressNextKeypress=true;
+				inputSuppressNextKeypress=true;
 				break;
 
 			case 37: // left
@@ -157,7 +182,7 @@
 
 				evt.preventDefault()
 
-				goofyText.suppressNextKeypress=true;
+				inputSuppressNextKeypress=true;
 				break;
 
 			case 39: // right
@@ -172,7 +197,7 @@
 					}
 				}
 
-				goofyText.suppressNextKeypress=true;
+				inputSuppressNextKeypress=true;
 				break;
 
 			case 46: // del
@@ -185,11 +210,11 @@
 				// Stupid thing to stop the browser from going back.
 				evt.keyCode = 0;								
 
-				goofyText.suppressNextKeypress = true;
+				inputSuppressNextKeypress = true;
 				break;
 
 			default:
-				goofyText.suppressNextKeypress=false;
+				inputSuppressNextKeypress=false;
 
 
 		}
@@ -232,6 +257,7 @@
 
 
 	 on.call(document, 'keydown', handleKeydown)
+	 on.call(document, 'keypress', handleKeypress)
 
 	 // DEBUG STUFF
 	 if (true){
