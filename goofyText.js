@@ -110,7 +110,7 @@
 			chr.isNewLine = true;
 
 		} else if (character===' ') {
-			chr.innerHTML = "<div style='display:inline-block;width:.25em;'> </div>";
+			chr.innerHTML = "<div style='display:inline-block;'>&nbsp;</div>";
 
 		} else {
 			if (chr.textContent!==undefined){
