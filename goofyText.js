@@ -85,7 +85,7 @@
 		var chr = document.createElement('span')
 
 		if ( character ==='\n' ) {
-			chr.innerHTML = "<br />";
+			chr.innerHTML = "\n<br />";
 			chr.isNewLine = true;
 
 		} else if (character===' ') {
