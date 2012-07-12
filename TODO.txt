@@ -4,6 +4,7 @@ Issues:
 	* Clipboard support
 	* Text selection
 	* Need right-side cursor
+	* When empty, make some sort of other cursor thingy.... or use some other cursor thingy alltogether :-/
 
 Tasks:
 
