@@ -143,7 +143,7 @@
 						chr = mkChar(cNode.textContent[i]);
 
 					} else if (cNode.nodeValue){
-						chr = mkChar(cNode.nodeValue[i]);
+						chr = mkChar(cNode.nodeValue.charAt(i));
 
 					} else {
 						throw "What am I supposed to do?"
