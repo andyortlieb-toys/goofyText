@@ -178,6 +178,9 @@
 			el.appendChild(placeHolder.childNodes[0]);
 		}
 
+		el.style.paddingLeft = el.style.paddingLeft || '2px'
+		el.style.paddingRight = el.style.paddingRight || '2px'
+
 	}
 
 	function handleKeypress (evt){
