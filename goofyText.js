@@ -10,6 +10,7 @@
 		,cursorCycleTimeout
 		,cursorCycleNextColor = 'black'
 		,cursorHistory = []
+		,cursorSuppressClear = false
 		,inputSuppressNextKeypress
 
 	; // End private declarations
@@ -101,6 +102,7 @@
 
 		on.call(chr, 'click', function(){
 			cursor = chr;
+			cursorSuppressClear = true;
 			cursorHistory.push(chr);
 			cursorCycleNextColor = 'black';
 			cursorCycle(true);
@@ -181,7 +183,7 @@
 		var newChrNode;
 
 
-		console.log("keypress", evt.keyCode)
+		//console.log("keypress", evt.keyCode)
 
 
 		if (evt.keyCode===13){ chr = '\n' }
@@ -201,7 +203,7 @@
 
 		var evt = evt || window.event
 		var chr = String.fromCharCode(evt.keyCode)
-		console.log("keydown", evt.keyCode, a=evt);
+		//console.log("keydown", evt.keyCode, a=evt);
 		
 		switch (evt.keyCode){
 			case 8: // backspace
@@ -320,8 +322,15 @@
 	 ****************************************/
 
 
-	 on.call(document, 'keydown', handleKeydown)
-	 on.call(document, 'keypress', handleKeypress)
+	 on.call(document, 'keydown', handleKeydown);
+	 on.call(document, 'keypress', handleKeypress);
+	 on.call(document, 'click', function(){
+	 	if (!cursorSuppressClear){
+	 		cursor = null;
+	 		cursorHistoryClear();
+	 	}
+	 	cursorSuppressClear = false;
+	 });
 
 	 // DEBUG STUFF
 	 if (true){
