@@ -85,6 +85,13 @@
 			cursor.style.borderLeftStyle =  'solid';
 			cursor.style.borderLeftColor =  cursorCycleNextColor;
 			cursor.style.marginLeft = '-1px';
+
+			// FIXME FIXME FIXME!!!!
+			// For some reason setting a background color allows the cursor to flash in IE7.
+			// All other browsers are fine without this.
+			cursor.style.backgroundColor = cursor.style.backgroundColor||'transparent';
+			// FIXTHAT ^ 			
+
 		}
 
 		clearTimeout(cursorCycleTimeout);
@@ -129,12 +136,6 @@
 	function initializeGoofyTextElement(el){
 		if (el.goofyTextInitialized) return;
 		el.goofyTextInitialized = true;
-
-		// FIXME FIXME FIXME!!!!
-		// For some reason setting a background color allows the cursor to flash in IE7.
-		// All other browsers are fine without this.
-		el.style.backgroundColor = 'white';
-		// FIXTHAT ^ 
 
 		var placeHolder	= document.createElement('div');
 		var throwAway 	= document.createElement('div');
