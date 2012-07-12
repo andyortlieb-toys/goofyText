@@ -220,7 +220,7 @@
 
 		var evt = evt || window.event
 		var chr = String.fromCharCode(evt.keyCode)
-		console.log("keydown", evt.keyCode);
+		console.log("keydown", evt.keyCode, a=evt);
 		
 		switch (evt.keyCode){
 			case 8: // backspace
@@ -231,7 +231,9 @@
 				}
 				
 				// Stupid thing to stop the browser from going back.
-				evt.keyCode = 0;
+				evt.keyCode = 0; // The less obvious approach
+				if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
+
 
 				inputSuppressNextKeypress=true;
 				break;
