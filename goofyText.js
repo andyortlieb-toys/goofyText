@@ -340,7 +340,7 @@
 	 // DEBUG STUFF
 	 if (true){
 	 	goofyText.debug = {
-	 		cursor : cursor
+	 		cursor : function(){return cursor;}
 			,cursorCycleTimeout : cursorCycleTimeout
 			,cursorHistory : cursorHistory
 			,on : on
