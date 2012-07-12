@@ -109,6 +109,9 @@
 			chr.innerHTML = "<br />";
 			chr.isNewLine = true;
 
+		} else if (character===' ') {
+			chr.innerHTML = "<div style='display:inline-block;width:.25em;'> </div>";
+
 		} else {
 			if (chr.textContent!==undefined){
 				chr.textContent = character;

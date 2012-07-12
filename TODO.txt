@@ -1,5 +1,8 @@
 Issues:
 	* Arrow keys cause scrolling when set up in line-mode configuration (overflow:scroll)
+	* Clipboard support
+	* Text selection
+	* Need right-side cursor
 
 Tasks:
  	* getValue, setValue
@@ -8,3 +11,4 @@ Tasks:
 	** Configurable: whether they can be edited with keyboard (callback for internal editing)
 
 	* Editor framework
+
