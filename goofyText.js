@@ -89,7 +89,7 @@
 			chr.isNewLine = true;
 
 		} else if (character===' ') {
-			chr.innerHTML = "<div style='display:inline-block;'>&nbsp;</div>";
+			chr.innerHTML = "<span>&nbsp;</span>";
 
 		} else {
 			if (chr.textContent!==undefined){
@@ -164,13 +164,6 @@
 			el.appendChild(placeHolder.childNodes[0]);
 		}
 
-
-		// Add clicks to each char
-		var chrList = el.querySelectorAll('span.chr');
-
-		for (var iChr=0; iChr<chrList.length; ++iChr){
-		 	goofyText.setClick(chrList[iChr]);
-		};		
 	}
 
 	function handleKeypress (evt){
@@ -232,6 +225,7 @@
 				break;
 
 			case 36: // Home
+
 
 				break;
 
