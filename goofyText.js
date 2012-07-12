@@ -1,7 +1,7 @@
 ;(function(){
 
 	// Private declarations
-	var 
+	var
 		/**
 		 * private cursor
 		 * maintains a reference to the single global cursor.
@@ -235,12 +235,31 @@
 				break;
 
 			case 35: // End
+				
+				while ( 
+						cursor.parentNode && cursor.nextSibling && cursor.nextSibling.parentNode
+						&& (cursor.parentNode === cursor.nextSibling.parentNode)
+						&& (cursor.offsetTop === cursor.nextSibling.offsetTop )
+				){
+					cursor.nextSibling.click();
 
+				}
+
+				inputSuppressNextKeypress = true;
 				break;
 
 			case 36: // Home
+				
+				while ( 
+						cursor.parentNode && cursor.previousSibling && cursor.previousSibling.parentNode
+						&& (cursor.parentNode === cursor.previousSibling.parentNode)
+						&& (cursor.offsetTop === cursor.previousSibling.offsetTop )
+				){
+					cursor.previousSibling.click();
 
+				}
 
+				inputSuppressNextKeypress = true;
 				break;
 
 			case 37: // left
@@ -282,9 +301,6 @@
 					cursor.parentNode.removeChild(search)
 				}
 				
-				// Stupid thing to stop the browser from going back.
-				evt.keyCode = 0;								
-
 				inputSuppressNextKeypress = true;
 				break;
 
