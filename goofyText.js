@@ -53,13 +53,20 @@
 	 * private cursorHistoryClear
 	 */
 	function cursorHistoryClear(){
-		for (var i=0;i<cursorHistory.length; ++i){
-			if (cursorHistory[i] === cursor) continue;
-			cursorHistory[i].style.borderLeftWidth = '0px';
-			cursorHistory[i].style.borderLeftStyle = 'solid';
-			cursorHistory[i].style.borderLeftColor = 'black';
-			cursorHistory[i].style.marginLeft = '0px';
+		var thingToClear;
+		var cursorInThere = false;
+
+		while (thingToClear = cursorHistory.pop()){
+			if (thingToClear == cursor){
+				cursorInThere = true;
+			} else {
+				thingToClear.style.borderLeftStyle = 'none';
+				thingToClear.style.borderLeftColor = 'white';
+				thingToClear.style.marginLeft = '0px';
+			}
 		}
+
+		if (cursorInThere) cursorHistory.push(cursor);
 	}
 
 	/**
@@ -72,7 +79,6 @@
 
 		// Set the cursor color
 		if (cursor && cursor.style){
-			console.log("cursorCycle")
 			cursorCycleNextColor= update||(cursorCycleNextColor==='white')?'black':'white';
 
 			cursor.style.borderLeftWidth =  '1px';
