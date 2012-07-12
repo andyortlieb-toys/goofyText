@@ -298,25 +298,14 @@
 				break;
 
 			case 46: // del
-				console.log( kursor = cursor )
 
 				var nextCursor = cursor.nextSibling || cursor.previousSibling
+
 				cursor.parentNode.removeChild(cursor);
 				cursor = nextCursor;
 
 				inputSuppressNextKeypress = true;
 				break;
-
-
-
-				/*var search = cursor.nextSibling;
-				
-				if (search){
-					cursor.parentNode.removeChild(search)
-				}
-				
-				inputSuppressNextKeypress = true;
-				break;*/
 
 			default:
 				inputSuppressNextKeypress=false;
