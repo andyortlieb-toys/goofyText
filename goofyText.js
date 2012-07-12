@@ -105,7 +105,8 @@
 		if (node.scrollIntoViewIfNeeded) return node.scrollIntoViewIfNeeded();
 
 		// FIXME: Awful awful in IE, Firefox, bleah
-		return node.scrollIntoView();
+		return;
+		//return node.scrollIntoView();
 
 	}
 
