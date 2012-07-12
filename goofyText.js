@@ -130,13 +130,9 @@
 		if (el.goofyTextInitialized) return;
 		el.goofyTextInitialized = true;
 
-		if (el.goofyTextSetup) return false;
-		el.goofyTextSetup = true;
-
 		var placeHolder	= document.createElement('div');
 		var throwAway 	= document.createElement('div');
 		var chr 		= null;
-
 		
 		// Find textNodes and explode them into goofyText chrs.
 		// Other nodes will just be reused verbatim.
