@@ -89,6 +89,9 @@
 			chr.isNewLine = true;
 
 		} else if (character===' ') {
+			// FIXME: In IE7, this doesn't wrap like it does everywhere else.
+			// adding a space makes it wrap.... but then you have double spaces.
+			//chr.innerHTML = "<span>&nbsp; </span>";
 			chr.innerHTML = "<span>&nbsp;</span>";
 
 		} else {
