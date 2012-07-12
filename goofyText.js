@@ -120,6 +120,7 @@
 
 		on.call(chr, 'click', function(){
 			cursor = chr;
+			console.log(kursor = cursor);
 			cursorSuppressClear = true;
 			cursorHistory.push(chr);
 			cursorCycleNextColor = 'black';
@@ -238,30 +239,23 @@
 				break;
 
 			case 35: // End
-				
-				while ( 
-						cursor.parentNode && cursor.nextSibling && cursor.nextSibling.parentNode
-						&& (cursor.parentNode === cursor.nextSibling.parentNode)
-						&& (cursor.offsetTop === cursor.nextSibling.offsetTop )
-				){
-					cursor.nextSibling.click();
-
-				}
-
-				inputSuppressNextKeypress = true;
-				break;
+				var directionalProperty = 'nextSibling';
 
 			case 36: // Home
-				
+				var directionalProperty = directionalProperty||'previousSibling';
+	
+				var nextCursor = cursor;
 				while ( 
-						cursor.parentNode && cursor.previousSibling && cursor.previousSibling.parentNode
-						&& (cursor.parentNode === cursor.previousSibling.parentNode)
-						&& (cursor.offsetTop === cursor.previousSibling.offsetTop )
+						nextCursor.parentNode && nextCursor[directionalProperty] && nextCursor[directionalProperty].parentNode
+						&& (nextCursor.parentNode === nextCursor[directionalProperty].parentNode)
+						&& (nextCursor.offsetTop === nextCursor[directionalProperty].offsetTop )
 				){
-					cursor.previousSibling.click();
+					nextCursor=nextCursor[directionalProperty]
 
 				}
 
+				nextCursor.scrollIntoView();
+				nextCursor.click();
 				inputSuppressNextKeypress = true;
 				break;
 
