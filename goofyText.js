@@ -14,40 +14,18 @@
 
 	; // End private declarations
 
-	/**
-	 * private method eventManager
-	 */
-	function eventManager(obj, eventName){
-
-		obj['on'+eventName] = function(){
-			for (var i=0; i<this.goofyTextListeners[eventName].length; ++i){
-				this.goofyTextListeners[eventName][i].apply(this, arguments);
-			}
-		}
-		obj['on'+eventName].goofyTextEventManager = true
-	}
 
 	/**
 	 * private method on
 	 * enables events, intended for DOM objects.	 
 	 */
 	function on(evtName, callBack){
-		var salvage = this['on'+evtName];
 
-		if (this===document && !this.goofyTextListeners) this.goofyTextListeners = {};
-		if (this===document && !this.goofyTextListeners[evtName]) this.goofyTextListeners[evtName] = eventManager(this, evtName);
-		if (salvage && ! salvage.goofyTextEventManager) on.call(this, evtName, callBack)
-
-
-		if (this.goofyTextListeners) {
-			if (!this.goofyTextListeners[evtName]) this.goofyTextListeners[evtName] = [];
-			return this.goofyTextListeners[evtName].push(callBack);
-
-		} else if (this.addEventListener){
+		if (this.addEventListener){
 			return this.addEventListener(evtName, callBack)
 
 		} else if (this.attachEvent){
-			return this.attachEvent(evtName, callBack)
+			return this.attachEvent('on'+evtName, callBack)
 
 		} else {
 			throw "Unable to attach event."
@@ -63,7 +41,7 @@
 			return this.removeEventListener(evtName, callBack)
 
 		} else if (this.detachEvent){
-			return this.detachEvent(evtName, callBack)
+			return this.detachEvent('on'+evtName, callBack)
 
 		} else {
 			throw "Unable to attach event."
