@@ -99,6 +99,16 @@
 		cursorCycleTimeout = setTimeout( cursorCycle, update?960:480 );
 	}
 
+
+	function scrollIntoViewIfNeeded (node){
+
+		if (node.scrollIntoViewIfNeeded) return node.scrollIntoViewIfNeeded();
+
+		// FIXME: Awful awful in IE, Firefox, bleah
+		return node.scrollIntoView();
+
+	}
+
 	function mkChar (character){
 		var chr = document.createElement('span')
 
@@ -120,11 +130,11 @@
 
 		on.call(chr, 'click', function(){
 			cursor = chr;
-			console.log(kursor = cursor);
 			cursorSuppressClear = true;
 			cursorHistory.push(chr);
 			cursorCycleNextColor = 'black';
 			cursorCycle(true);
+			scrollIntoViewIfNeeded(chr);
 		});
 
 		return chr;
@@ -205,6 +215,8 @@
 
 			// FIXME: Since switching away from Ext, this doesn't solve the issue anymore.
 			cursor.click();
+
+			
 		}
 
 	}
@@ -254,14 +266,13 @@
 
 				}
 
-				nextCursor.scrollIntoView();
+				scrollIntoViewIfNeeded(nextCursor);
 				nextCursor.click();
 				inputSuppressNextKeypress = true;
 				break;
 
 			case 37: // left
 
-				console.log ("Going left")
 				var search = cursor;
 				while (search !== null){
 					search = search.previousSibling;
@@ -271,14 +282,16 @@
 					}
 				}
 
+				// Prevent browser scrolling.
+				evt.keyCode = 0; // The less obvious approach
 				if (evt.preventDefault){ evt.preventDefault(); }
 
 				inputSuppressNextKeypress=true;
+				return false;
 				break;
 
 			case 39: // right
 
-				console.log ("Going right")
 				var search = cursor;
 				while (search !== null){
 					search = search.nextSibling;
@@ -288,7 +301,12 @@
 					}
 				}
 
+				// Prevent browser scrolling
+				evt.keyCode = 0; // The less obvious approach
+				if (evt.preventDefault){ evt.preventDefault(); }
+
 				inputSuppressNextKeypress=true;
+				return false;
 				break;
 
 			case 46: // del
@@ -306,6 +324,7 @@
 
 
 		}
+
 
 	}
 
