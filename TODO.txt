@@ -1,10 +1,12 @@
 Issues:
+
 	* Arrow keys cause scrolling when set up in line-mode configuration (overflow:scroll)
 	* Clipboard support
 	* Text selection
 	* Need right-side cursor
 
 Tasks:
+
  	* getValue, setValue
 	
 	* support non-character artifacts
@@ -12,3 +14,6 @@ Tasks:
 
 	* Editor framework
 
+Nice-to-haves:
+
+	* Insert/Overwrite
