@@ -100,8 +100,8 @@
 		}
 
 		on.call(chr, 'click', function(){
-			cursor = this;
-			cursorHistory.push(this);
+			cursor = chr;
+			cursorHistory.push(chr);
 			cursorCycleNextColor = 'black';
 			cursorCycle(true);
 		});
