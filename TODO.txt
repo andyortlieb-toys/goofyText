@@ -1,0 +1,10 @@
+Issues:
+	* Arrow keys cause scrolling when set up in line-mode configuration (overflow:scroll)
+
+Tasks:
+ 	* getValue, setValue
+	
+	* support non-character artifacts
+	** Configurable: whether they can be edited with keyboard (callback for internal editing)
+
+	* Editor framework
