@@ -252,7 +252,7 @@
 					}
 				}
 
-				evt.preventDefault()
+				if (evt.preventDefault){ evt.preventDefault(); }
 
 				inputSuppressNextKeypress=true;
 				break;
