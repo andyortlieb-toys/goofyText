@@ -227,7 +227,7 @@
 
 		var evt = evt || window.event
 		var chr = String.fromCharCode(evt.keyCode)
-		//console.log("keydown", evt.keyCode, a=evt);
+		
 		
 		switch (evt.keyCode){
 			case 8: // backspace
@@ -249,6 +249,16 @@
 				cursor = null;
 
 				inputSuppressNextKeypress=true;
+				break;
+
+			case 32: // space
+				// Stupid thing to stop the browser from scrolling downward.
+				evt.keyCode = 0; // The less obvious approach
+				if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
+				inputSuppressNextKeypress=false;
+				handleKeypress({keyCode: 32});
+				inputSuppressNextKeypress=true;
+				return false;
 				break;
 
 			case 35: // End
