@@ -167,7 +167,11 @@
 		setContent(node, originalContent);
 
 		on.call(node, 'click', function(){
-			console.log("Editable area click");
+			/*if (cursor.preventNonCharClick){
+				cursor.preventNonCharClick = false
+				return;
+			}*/
+			console.log("STUB: Search for the last place a cursor could go before this point.");
 		})
 
 
@@ -262,7 +266,6 @@
 			cursor.preventUntarget = true;
 		},
 		untarget: function(){
-			console.log("untarget");
 			if (cursor.preventUntarget){
 				cursor.preventUntarget = false;
 				return;
