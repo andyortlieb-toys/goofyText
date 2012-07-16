@@ -148,6 +148,8 @@
 			console.log("Editable area click");
 		})
 
+
+
 		return node;
 	}
 
@@ -221,8 +223,12 @@
 			}
 			cursor.cycle( true );
 			cursor.preventUntarget = true;
+			cursor.hijacker.click();
+			cursor.hijacker.focus();
+			cursor.preventUntarget = true;
 		},
 		untarget: function(){
+			console.log("untarget");
 			if (cursor.preventUntarget){
 				cursor.preventUntarget = false;
 				return;
@@ -267,14 +273,19 @@
 
 		},
 		putChar: function(char){
-
+			console.log(char);
 		},
 		putText: function(text){
+
+			for (var i=0; i<text.length; ++i){
+				cursor.putChar(text.charAt(0));
+			}
 
 		},
 
 		// Handler for keydown:
-		keydown: function (evt){ 
+		keydown: function (evt){
+			return; 
 			return console.log("IGNORING KEYDOWN");
 			if (!cursor.isReady()) return;
 			console.log("keydown);")
@@ -406,6 +417,7 @@
 		},
 		// Handler for keypress:
 		keypress: function (evt){
+			return;
 			return console.log("IGNORING KEYPRESS");
 			if (!cursor.isReady()) return;
 			if (inputSuppressNextKeypress) return;
@@ -466,11 +478,20 @@
 	 on.call(document, 'click', function(){
 	 	cursor.untarget();
 	 });
+
 	 on.call(cursor.hijacker, 'input', function(){
-	 	var buffer = cursor.hijacker.value;
+	 	buffer = cursor.hijacker.value;
 	 	cursor.hijacker.value='';
-	 	console.log("Buffer: "+buffer)
+	 	cursor.putText(buffer);
 	 });
+
+	 
+	 cursor.hijacker.style.position='absolute';
+	 cursor.hijacker.style.left='0px';
+	 cursor.hijacker.style.top='0px';
+	 cursor.hijacker.style.width='55px';
+	 cursor.hijacker.style.height='55px';
+	 document.body.appendChild(cursor.hijacker);
 
 
 	// Debugging info-- cut from builds
@@ -491,6 +512,7 @@
 		// Other debug junk
 
 		goofyTextDebug.cursorAppearance();
+		h = cursor.hijacker;
 
 
 	}
