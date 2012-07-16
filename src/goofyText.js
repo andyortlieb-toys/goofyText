@@ -161,6 +161,8 @@
 	var cursor = {
 		// The actual element that blinks.
 		blinker: document.createElement('span'),
+		// A place to hide the blinker when nothing is selected.
+		stashNode: document.createElement('div'),
 		// The <TEXTAREA> that allows us to deal with input methods.
 		hijacker: document.createElement('textarea'),
 		// The next color of the cursor:
@@ -187,13 +189,165 @@
 		}, 
 		// Method target puts a cursor around a chrNode
 		target: function(chrNode){
+			cursor.preventStash = true;
 			if (chrNode.previousSibling===cursor.blinker){
 				chrNode.parentNode.insertBefore( cursor.blinker, chrNode.nextSibling );
 			} else {
 				chrNode.parentNode.insertBefore( cursor.blinker, chrNode );
 			}
+		},
+		// Stashes the cursor, if allowed.
+		stash: function(){
+		 	if (!cursor.preventStash){
+		 		cursor.stashNode.appendChild(cursor.blinker);
+		 	}
+		 	cursor.preventStash = false;
+		},
+		// isReady, whether or not the cursor is ready to handle keys
+		isReady: function(){
+			return (cursor.blinker.ownerCt !== cursor.stashNode);
+		},
+		// Handler for keydown:
+		keydown: function (evt){ 
+			if (!cursor.isReady()) return;
+			console.log("keydown);")
+
+			var evt = evt || window.event
+			var chr = String.fromCharCode(evt.keyCode)
+			
+			
+			switch (evt.keyCode){
+				case 8: // backspace
+					var search = cursor.previousSibling;
+					
+					if (search){
+						cursor.parentNode.removeChild(search)
+					}
+					
+					// Stupid thing to stop the browser from going back.
+					evt.keyCode = 0; // The less obvious approach
+					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
+
+
+					inputSuppressNextKeypress=true;
+					break;
+
+				case 9: // tab
+					cursor = null;
+
+					inputSuppressNextKeypress=true;
+					break;
+
+				case 32: // space
+					// Stupid thing to stop the browser from scrolling downward.
+					evt.keyCode = 0; // The less obvious approach
+					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
+					inputSuppressNextKeypress=false;
+					cursor.keypress({keyCode: 32});
+					inputSuppressNextKeypress=true;
+					return false;
+					break;
+
+				case 35: // End
+					var directionalProperty = 'nextSibling';
+
+				case 36: // Home
+					var directionalProperty = directionalProperty||'previousSibling';
+		
+					var nextCursor = cursor;
+					while ( 
+							nextCursor.parentNode && nextCursor[directionalProperty] && nextCursor[directionalProperty].parentNode
+							&& (nextCursor.parentNode === nextCursor[directionalProperty].parentNode)
+							&& (nextCursor.offsetTop === nextCursor[directionalProperty].offsetTop )
+					){
+						nextCursor=nextCursor[directionalProperty]
+
+					}
+
+					scrollIntoViewIfNeeded(nextCursor);
+					nextCursor.click();
+					inputSuppressNextKeypress = true;
+					break;
+
+				case 37: // left
+
+					var search = cursor;
+					while (search !== null){
+						search = search.previousSibling;
+						if (search){
+							search.click();
+							break;
+						}
+					}
+
+					// Prevent browser scrolling.
+					evt.keyCode = 0; // The less obvious approach
+					if (evt.preventDefault){ evt.preventDefault(); }
+
+					inputSuppressNextKeypress=true;
+					return false;
+					break;
+
+				case 39: // right
+
+					var search = cursor;
+					while (search !== null){
+						search = search.nextSibling;
+						if (search){
+							search.click();
+							break;
+						}
+					}
+
+					// Prevent browser scrolling
+					evt.keyCode = 0; // The less obvious approach
+					if (evt.preventDefault){ evt.preventDefault(); }
+
+					inputSuppressNextKeypress=true;
+					return false;
+					break;
+
+				case 46: // del
+					if (cursor.blinker.nextSibling){ cursor.blinker.parentNode.removeChild(cursor.blinker.nextSibling)}
+
+					inputSuppressNextKeypress = true;
+					break;
+
+				default:
+					inputSuppressNextKeypress=false;
+
+			}
+
+		},
+		// Handler for keypress:
+		keypress: function (evt){
+			console.log("keypress")
+			if (!cursor.isReady()) return;
+			if (inputSuppressNextKeypress) return;
+
+			// Figure out other reasons to get out of this place.
+			var evt = evt || window.event
+			var chr = String.fromCharCode(evt.keyCode || evt.which)
+			var newChrNode;
+
+
+			//console.log("keypress", evt.keyCode)
+
+
+			if (evt.keyCode===13){ chr = '\n' }
+
+			if (chr){
+				newChrNode = mkCharNode(chr);
+				cursor.blinker.parentNode.insertBefore(newChrNode, cursor.blinker);	
+			}
 		}
+
+
+
 	};
+
+	// Stash the blinker right away.
+	cursor.stash();
 
 	// Style the blinker
 	cursor.blinker.style.display = 'inline-block';
@@ -225,6 +379,22 @@
 			}			
 		}
 	};
+
+
+	/****************************************
+	 ****************************************
+
+				One-time setup
+
+	 ****************************************
+	 ****************************************/
+
+	 on.call(document, 'keydown', cursor.keydown);
+	 on.call(document, 'keypress', cursor.keypress);
+	 on.call(document, 'click', function(){
+	 	cursor.stash();
+	 });
+
 
 	// Debugging info-- cut from builds
 	if (true){ 
