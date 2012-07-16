@@ -165,6 +165,12 @@
 		blinker: null,
 		// The <TEXTAREA> that allows us to deal with input methods.
 		hijacker: document.createElement('textarea'),
+		//processHijacker...
+		processHijacker: function(){
+		 	buffer = cursor.hijacker.value;
+		 	cursor.hijacker.value='';
+		 	cursor.putText(buffer);
+		},
 		// The next color of the cursor:
 		nextColor: 'black',
 		colorA: 'black',
@@ -484,11 +490,20 @@
 	 	cursor.untarget();
 	 });
 
-	 on.call(cursor.hijacker, 'input', function(){
-	 	buffer = cursor.hijacker.value;
-	 	cursor.hijacker.value='';
-	 	cursor.putText(buffer);
-	 });
+	 if (cursor.hijacker.oninput !== undefined){
+	 	console.log("oninput seems alright.")
+		 on.call(cursor.hijacker, 'input', function(){
+		 	cursor.processHijacker();
+		 });
+	 	
+	 } else {
+	 	console.log("Dude.... you don't have oninput. IE.")
+	 	on.call(cursor.hijacker, 'keydown', function(){
+	 		setTimeout( cursor.processHijacker, 10);
+	 	})
+	 }
+
+	 console.log("HIJACKER HAVE? (oninput, onchange)", cursor.hijacker.oninput!==undefined, cursor.hijacker.onchange!==undefined);
 
 	 
 	 cursor.hijacker.style.position='absolute';
@@ -497,6 +512,7 @@
 	 cursor.hijacker.style.width='55px';
 	 cursor.hijacker.style.height='55px';
 	 document.body.appendChild(cursor.hijacker);
+	 cursor.hijacker.onChange
 
 
 	// Debugging info-- cut from builds
