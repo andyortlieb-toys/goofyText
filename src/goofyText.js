@@ -491,15 +491,13 @@
 	 });
 
 	 if (cursor.hijacker.oninput !== undefined){
-	 	console.log("oninput seems alright.")
 		 on.call(cursor.hijacker, 'input', function(){
 		 	cursor.processHijacker();
 		 });
 	 	
 	 } else {
-	 	console.log("Dude.... you don't have oninput. IE.")
 	 	on.call(cursor.hijacker, 'keydown', function(){
-	 		setTimeout( cursor.processHijacker, 10);
+	 		setTimeout( cursor.processHijacker, 5);
 	 	})
 	 }
 
