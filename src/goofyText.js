@@ -182,12 +182,11 @@
 		}, 
 		// Method target puts a cursor around a chrNode
 		target: function(chrNode,forceRight){
-			console.log('target')
 			if (cursor.blinker !== chrNode){
 				cursor.untarget(cursor.blinker);	
 			} else {
 				// It is the same. just switch sides.
-
+				forceRight = !cursor.blinker.forceRight;
 			}
 
 			cursor.blinker = chrNode;
@@ -208,6 +207,7 @@
 				cursor.blinker.style.borderLeftStyle='solid';
 				cursor.blinker.style.borderLeftColor='black';
 				cursor.blinker.style.marginLeft='-2px';
+				cursor.blinker.forceRight = false;
 			}
 			cursor.cycle( true );
 
@@ -219,7 +219,6 @@
 				return;
 			}
 			if (!cursor.blinker || !cursor.blinker.style) return ;
-			console.log('untarget');
 			cursor.relieve(cursor.blinker);
 
 			cursor.blinker = null;
