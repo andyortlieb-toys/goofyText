@@ -160,27 +160,23 @@
 	// Information regarding where the cursor lives
 	var cursor = {
 		// The actual element that blinks.
-		blinker: document.createElement('span'),
-		// A place to hide the blinker when nothing is selected.
-		stashNode: document.createElement('div'),
+		blinker: null,
 		// The <TEXTAREA> that allows us to deal with input methods.
 		hijacker: document.createElement('textarea'),
 		// The next color of the cursor:
 		nextColor: 'black',
+		colorA: 'black',
+		colorB: 'transparent',
 		// timeout id
 		cycleTimeout: null,
+		//whether to prevent stashing the cursor.
+		preventStash: false,
 		// method to cycle the cursor.
 		cycle: function(update){
 			// Set the cursor color
-			if (true || cursor.character){
-				cursor.nextColor= update||(cursor.nextColor==='transparent')?'black':'transparent';
-				cursor.blinker.style.borderRightColor =  cursor.nextColor;
-
-				// FIXME FIXME FIXME!!!!
-				// For some reason setting a background color allows the cursor to flash in IE7.
-				// All other browsers are fine without this.
-				cursor.blinker.style.backgroundColor = cursor.blinker.style.backgroundColor||'transparent';
-				// FIXTHAT ^ 
+			if (cursor.blinker){
+				cursor.nextColor= update||(cursor.nextColor===cursor.colorB)?cursor.colorA:cursor.colorB;
+				cursor.blinker.style.borderLeftColor =  cursor.nextColor;
 			}
 
 			// Clear & reset the timout
@@ -189,26 +185,56 @@
 		}, 
 		// Method target puts a cursor around a chrNode
 		target: function(chrNode, forceLeft, forceRight){
+			console.log('target')
+			if (cursor.blinker !== chrNode){
+				cursor.untarget(cursor.blinker);	
+			} 
+			cursor.blinker = chrNode;
 			cursor.preventStash = true;
-			if (forceRight || (chrNode.previousSibling===cursor.blinker && !forceLeft) ){
+			
+			
+			if (forceRight){
 				// Put the cursor to the right of chrNode.
-				chrNode.parentNode.insertBefore( cursor.blinker, chrNode.nextSibling );
+				// Style the blinker
+				cursor.blinker.style.borderRightWidth='2px';
+				cursor.blinker.style.borderRightStyle='solid';
+				cursor.blinker.style.borderRightColor='black';
+				cursor.blinker.style.marginRight='-2px';		
 
 			} else {
 				// Put the cursor to the left of chrNode.
-				chrNode.parentNode.insertBefore( cursor.blinker, chrNode );
+				// Style the blinker
+				cursor.blinker.style.borderLeftWidth='2px';
+				cursor.blinker.style.borderLeftStyle='solid';
+				cursor.blinker.style.borderLeftColor='black';
+				cursor.blinker.style.marginLeft='-2px';
 			}
+		},
+		untarget: function(chrNode){
+			if (!chrNode || !chrNode.style) return ;
+			console.log('untarget');
+			cursor.blinker = null;
+			chrNode.style.borderRightWidth='';
+			chrNode.style.borderRightStyle='';
+			chrNode.style.borderRightColor='';
+			chrNode.style.marginRight='';		
+			chrNode.style.borderLefttWidth='';
+			chrNode.style.borderLeftStyle='';
+			chrNode.style.borderLeftColor='';
+			chrNode.style.marginLeft='';			
 		},
 		// Stashes the cursor, if allowed.
 		stash: function(){
+			console.log("Stash()")
 		 	if (!cursor.preventStash){
-		 		cursor.stashNode.appendChild(cursor.blinker);
+		 		cursor.untarget()
+		 		cursor.blinker=false;
 		 	}
 		 	cursor.preventStash = false;
 		},
 		// isReady, whether or not the cursor is ready to handle keys
 		isReady: function(){
-			return (cursor.blinker.ownerCt !== cursor.stashNode);
+			return !cursor.blinker;
 		},
 		// Handler for keydown:
 		keydown: function (evt){ 
@@ -342,9 +368,9 @@
 		},
 		// Handler for keypress:
 		keypress: function (evt){
-			console.log("keypress")
 			if (!cursor.isReady()) return;
 			if (inputSuppressNextKeypress) return;
+			console.log("keypress")
 
 			// Figure out other reasons to get out of this place.
 			var evt = evt || window.event
@@ -369,17 +395,6 @@
 
 	// Stash the blinker right away.
 	cursor.stash();
-
-	// Style the blinker
-	cursor.blinker.style.display = 'inline-block';
-	cursor.blinker.style.borderRightWidth='2px';
-	cursor.blinker.style.borderRightStyle='solid';
-	cursor.blinker.style.borderRightColor='black';
-	cursor.blinker.style.marginLeft='-1px';
-	cursor.blinker.style.marginRight='-1px';
-	cursor.blinker.style.width='0px';
-	cursor.blinker.innerHTML='&nbsp;';
-
 
 
 	// Public declarations:
@@ -426,12 +441,6 @@
 			cursorAppearance: function(){
 				var testEl = document.createElement("DIV");
 				var testSpan;
-
-				testEl.innerHTML = 'NewLine:<br /><span>SpanOne</span><span id="goofyTextCursorTest">SpanTwo</span><span>SpanThree</span><br />Newline';
-				document.body.appendChild(testEl);
-
-				testSpan = document.getElementById('goofyTextCursorTest');
-				testSpan.parentNode.insertBefore( cursor.blinker, testSpan);
 
 				cursor.cycle();
 
