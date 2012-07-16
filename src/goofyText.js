@@ -173,7 +173,13 @@
 			// Set the cursor color
 			if (cursor.blinker){
 				cursor.nextColor= update||(cursor.nextColor===cursor.colorB)?cursor.colorA:cursor.colorB;
-				cursor.blinker.style.borderLeftColor =  cursor.nextColor;
+
+				if (cursor.blinker.forceRight){
+					cursor.blinker.style.borderRightColor = cursor.nextColor;
+				} else {
+					cursor.blinker.style.borderLeftColor = cursor.nextColor;	
+				}
+				
 			}
 
 			// Clear & reset the timout
@@ -187,10 +193,14 @@
 			} else {
 				// It is the same. just switch sides.
 				forceRight = !cursor.blinker.forceRight;
+				cursor.relieve(cursor.blinker);
 			}
 
 			cursor.blinker = chrNode;
-			
+
+			// FIXME: Stupid stupid hack for ie7.
+			cursor.blinker.style.backgroundColor = cursor.blinker.style.backgroundColor||'transparent';
+
 			if (forceRight){
 				// Put the cursor to the right of chrNode.
 				// Style the blinker
@@ -210,7 +220,6 @@
 				cursor.blinker.forceRight = false;
 			}
 			cursor.cycle( true );
-
 			cursor.preventUntarget = true;
 		},
 		untarget: function(){
@@ -242,7 +251,7 @@
 
 		// isReady, whether or not the cursor is ready to handle keys
 		isReady: function(){
-			return !cursor.blinker;
+			return cursor.blinker;
 		},
 		putNode: function(node){
 			
