@@ -221,17 +221,14 @@
 			
 			switch (evt.keyCode){
 				case 8: // backspace
-					var search = cursor.previousSibling;
 					
-					if (search){
-						cursor.parentNode.removeChild(search)
+					if (cursor.blinker.previousSibling){
+						cursor.blinker.parentNode.removeChild(cursor.blinker.previousSibling)
 					}
 					
 					// Stupid thing to stop the browser from going back.
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
-
-
 					inputSuppressNextKeypress=true;
 					break;
 
@@ -378,7 +375,8 @@
 	cursor.blinker.style.borderRightWidth='2px';
 	cursor.blinker.style.borderRightStyle='solid';
 	cursor.blinker.style.borderRightColor='black';
-	cursor.blinker.style.marginRight='-2px';
+	cursor.blinker.style.marginLeft='-1px';
+	cursor.blinker.style.marginRight='-1px';
 	cursor.blinker.style.width='0px';
 	cursor.blinker.innerHTML='&nbsp;';
 

@@ -228,20 +228,18 @@
 		var evt = evt || window.event
 		var chr = String.fromCharCode(evt.keyCode)
 		
-		
+		console.log(evt.keyCode);
 		switch (evt.keyCode){
 			case 8: // backspace
-				var search = cursor.previousSibling;
-				
-				if (search){
-					cursor.parentNode.removeChild(search)
-				}
+				console.log("backspace hit")
+				if (cursor.blinker.previousSibling){
+					console.log("Removing...")
+					cursor.blinker.parentNode.removeChild(cursor.blinker.previousSibling)
+				} else console.log("Didn't do it.")
 				
 				// Stupid thing to stop the browser from going back.
 				evt.keyCode = 0; // The less obvious approach
 				if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
-
-
 				inputSuppressNextKeypress=true;
 				break;
 
