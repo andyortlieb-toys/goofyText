@@ -63,6 +63,9 @@
 		} else if (character===' ') {
 			chrNode.innerHTML = "<span style='display:inline-block'>&nbsp;</span>";
 
+		} else if (character==='\t'){
+			chrNode.innerHTML = "<span style='display:inline-block'>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+
 		} else {
 			if (chrNode.textContent!==undefined){
 				chrNode.textContent = character;
