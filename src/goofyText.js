@@ -28,7 +28,7 @@
 
 			// Set the cursor color
 			if (true || cursor.character){
-				cursor.nextColor= update||(cursor.nextColor==='white')?'black':'white';
+				cursor.nextColor= update||(cursor.nextColor==='transparent')?'black':'transparent';
 
 
 				cursor.blinker.style.borderRightColor =  cursor.nextColor;
@@ -54,6 +54,7 @@
 	cursor.blinker.style.borderRightWidth='2px';
 	cursor.blinker.style.borderRightStyle='solid';
 	cursor.blinker.style.borderRightColor='black';
+	cursor.blinker.style.marginRight='-2px';
 	cursor.blinker.style.width='0px';
 	cursor.blinker.innerHTML='&nbsp;';
 
@@ -71,7 +72,7 @@
 				document.body.appendChild(testEl);
 
 				testSpan = document.getElementById('goofyTextCursorTest');
-				testSpan.insertBefore(cursor.blinker);
+				testSpan.parentNode.insertBefore( cursor.blinker, testSpan);
 
 				cursor.cycle();
 
