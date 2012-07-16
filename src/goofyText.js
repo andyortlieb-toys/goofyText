@@ -322,10 +322,7 @@
 
 		// Handler for keydown:
 		keydown: function (evt){
-			return; 
-			return console.log("IGNORING KEYDOWN");
 			if (!cursor.isReady()) return;
-			console.log("keydown);")
 
 			var evt = evt || window.event
 			var chr = String.fromCharCode(evt.keyCode)
@@ -350,7 +347,7 @@
 					inputSuppressNextKeypress=true;
 					break;
 
-				case 32: // space
+/*				case 32: // space
 					// Stupid thing to stop the browser from scrolling downward.
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
@@ -358,7 +355,7 @@
 					cursor.keypress({keyCode: 32});
 					inputSuppressNextKeypress=true;
 					return false;
-					break;
+					break;*/
 
 				case 35: // End
 					var search = cursor.blinker;
@@ -441,7 +438,14 @@
 					break;
 
 				case 46: // del
-					if (cursor.blinker.nextSibling){ cursor.blinker.parentNode.removeChild(cursor.blinker.nextSibling)}
+					if (cursor.blinker.forceRight){
+						if (cursor.blinker.nextSibling){ cursor.blinker.parentNode.removeChild(cursor.blinker.nextSibling)}
+					} else {
+						var removeGuy = cursor.blinker;
+						cursor.target(cursor.blinker.nextSibling || cursor.blinker.previousSibling);
+						cursor.blinker.parentNode.removeChild(removeGuy)
+					}
+					
 
 					inputSuppressNextKeypress = true;
 					break;
@@ -510,9 +514,10 @@
 	 ****************************************
 	 ****************************************/
 
-	 on.call(document, 'keydown', cursor.keydown);
-	 on.call(document, 'keypress', cursor.keypress);
-	 on.call(document, 'click', function(){
+	on.call(cursor.hijacker, 'keydown', cursor.keydown);
+	on.call(cursor.hijacker, 'keypress', cursor.keypress);
+
+	on.call(document, 'click', function(){
 	 	cursor.untarget();
 	 });
 
