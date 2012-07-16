@@ -188,11 +188,14 @@
 			cursor.cycleTimeout = setTimeout( cursor.cycle, update?960:480 );
 		}, 
 		// Method target puts a cursor around a chrNode
-		target: function(chrNode){
+		target: function(chrNode, forceLeft, forceRight){
 			cursor.preventStash = true;
-			if (chrNode.previousSibling===cursor.blinker){
+			if (forceRight || (chrNode.previousSibling===cursor.blinker && !forceLeft) ){
+				// Put the cursor to the right of chrNode.
 				chrNode.parentNode.insertBefore( cursor.blinker, chrNode.nextSibling );
+
 			} else {
+				// Put the cursor to the left of chrNode.
 				chrNode.parentNode.insertBefore( cursor.blinker, chrNode );
 			}
 		},
@@ -249,24 +252,45 @@
 					break;
 
 				case 35: // End
-					var directionalProperty = 'nextSibling';
-
-				case 36: // Home
-					var directionalProperty = directionalProperty||'previousSibling';
-		
-					var nextCursor = cursor;
+					var search = cursor.blinker;
+					
+					// Find the thing we want to hit... on the same line.
 					while ( 
-							nextCursor.parentNode && nextCursor[directionalProperty] && nextCursor[directionalProperty].parentNode
-							&& (nextCursor.parentNode === nextCursor[directionalProperty].parentNode)
-							&& (nextCursor.offsetTop === nextCursor[directionalProperty].offsetTop )
+							search.parentNode && search.nextSibling && search.nextSibling.parentNode
+							&& (search.parentNode === search.nextSibling.parentNode)
+							&& (search.offsetTop === search.nextSibling.offsetTop )
 					){
-						nextCursor=nextCursor[directionalProperty]
-
+						search=search.nextSibling
 					}
 
-					scrollIntoViewIfNeeded(nextCursor);
-					nextCursor.click();
-					inputSuppressNextKeypress = true;
+					// Find the last one, and force the cursor to the right of it.
+					cursor.target( search,false,true );
+
+					evt.keyCode = 0; // The less obvious approach
+					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
+					inputSuppressNextKeypress=true;
+					return false;
+					break;
+
+				case 36: // Home
+					var search = cursor.blinker;
+					
+					// Find the thing we want to hit... on the same line.
+					while ( 
+							search.parentNode && search.previousSibling && search.previousSibling.parentNode
+							&& (search.parentNode === search.previousSibling.parentNode)
+							&& (search.offsetTop === search.previousSibling.offsetTop )
+					){
+						search=search.previousSibling
+					}
+
+					// Find the last one, and force the cursor to the right of it.
+					cursor.target( search,true,false );
+
+					evt.keyCode = 0; // The less obvious approach
+					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
+					inputSuppressNextKeypress=true;
+					return false;
 					break;
 
 				case 37: // left
