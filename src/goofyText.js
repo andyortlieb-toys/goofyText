@@ -11,11 +11,13 @@
 		if (obj.offsetParent) {
 			curleft = obj.offsetLeft
 			curtop = obj.offsetTop
+			// FIXME: This really needs some TLC
 			while (obj = obj.offsetParent) {
-				curleft += obj.offsetLeft
-				curtop += obj.offsetTop
+				curleft += obj.offsetLeft ;
+				curtop += obj.offsetTop ;
 			}
 		}
+		
 		return [curleft,curtop];
 	}
 
@@ -209,7 +211,8 @@
 				}
 
 				var xy = findPos(cursor.blinker);
-				cursor.hijacker.style.left=''+xy[0]+'px';
+				// FIXME:
+				//cursor.hijacker.style.left=''+xy[0]+'px';
 				cursor.hijacker.style.top=''+xy[1]+'px';				
 				
 			}
