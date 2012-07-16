@@ -74,10 +74,7 @@
 
 		// It Might makes sense to refactor this.  if we start calling .click() at any point.
 		on.call(chrNode, 'click', function(){
-			console.log("Char click");
 			cursor.target(chrNode);
-			cursor.cycle(true);
-			scrollIntoViewIfNeeded(chrNode);
 		});
 
 		return chrNode;
@@ -169,8 +166,8 @@
 		colorB: 'transparent',
 		// timeout id
 		cycleTimeout: null,
-		//whether to prevent stashing the cursor.
-		preventStash: false,
+		//whether to prevent un-targeting the cursor.
+		preventUntarget: false,
 		// method to cycle the cursor.
 		cycle: function(update){
 			// Set the cursor color
@@ -184,14 +181,16 @@
 			cursor.cycleTimeout = setTimeout( cursor.cycle, update?960:480 );
 		}, 
 		// Method target puts a cursor around a chrNode
-		target: function(chrNode, forceLeft, forceRight){
+		target: function(chrNode,forceRight){
 			console.log('target')
 			if (cursor.blinker !== chrNode){
 				cursor.untarget(cursor.blinker);	
-			} 
+			} else {
+				// It is the same. just switch sides.
+
+			}
+
 			cursor.blinker = chrNode;
-			cursor.preventStash = true;
-			
 			
 			if (forceRight){
 				// Put the cursor to the right of chrNode.
@@ -199,7 +198,8 @@
 				cursor.blinker.style.borderRightWidth='2px';
 				cursor.blinker.style.borderRightStyle='solid';
 				cursor.blinker.style.borderRightColor='black';
-				cursor.blinker.style.marginRight='-2px';		
+				cursor.blinker.style.marginRight='-2px';
+				cursor.blinker.forceRight = true;	
 
 			} else {
 				// Put the cursor to the left of chrNode.
@@ -209,35 +209,65 @@
 				cursor.blinker.style.borderLeftColor='black';
 				cursor.blinker.style.marginLeft='-2px';
 			}
+			cursor.cycle( true );
+
+			cursor.preventUntarget = true;
 		},
-		untarget: function(chrNode){
-			if (!chrNode || !chrNode.style) return ;
+		untarget: function(){
+			if (cursor.preventUntarget){
+				cursor.preventUntarget = false;
+				return;
+			}
+			if (!cursor.blinker || !cursor.blinker.style) return ;
 			console.log('untarget');
+			cursor.relieve(cursor.blinker);
+
 			cursor.blinker = null;
-			chrNode.style.borderRightWidth='';
-			chrNode.style.borderRightStyle='';
-			chrNode.style.borderRightColor='';
-			chrNode.style.marginRight='';		
-			chrNode.style.borderLefttWidth='';
-			chrNode.style.borderLeftStyle='';
-			chrNode.style.borderLeftColor='';
-			chrNode.style.marginLeft='';			
 		},
-		// Stashes the cursor, if allowed.
-		stash: function(){
-			console.log("Stash()")
-		 	if (!cursor.preventStash){
-		 		cursor.untarget()
-		 		cursor.blinker=false;
-		 	}
-		 	cursor.preventStash = false;
+		relieve: function(node){
+			if (node){
+				node.forceRight = false;
+				if  (node.style){
+					// Clear all the styles.
+					node.style.borderRightWidth='';
+					node.style.borderRightStyle='';
+					node.style.borderRightColor='';
+					node.style.marginRight='';
+					node.style.borderLefttWidth='';
+					node.style.borderLeftStyle='';
+					node.style.borderLeftColor='';
+					node.style.marginLeft='';
+				}
+			} 
 		},
+
 		// isReady, whether or not the cursor is ready to handle keys
 		isReady: function(){
 			return !cursor.blinker;
 		},
+		putNode: function(node){
+			
+			if (cursor.blinker.forceRight){
+				// Put the new node AFTER the blinker, and target the new node.
+
+			} else {
+				// Business as usual.
+
+			}
+
+			return cursor;
+
+		},
+		putChar: function(char){
+
+		},
+		putText: function(text){
+
+		},
+
 		// Handler for keydown:
 		keydown: function (evt){ 
+			return console.log("IGNORING KEYDOWN");
 			if (!cursor.isReady()) return;
 			console.log("keydown);")
 
@@ -287,7 +317,7 @@
 					}
 
 					// Find the last one, and force the cursor to the right of it.
-					cursor.target( search,false,true );
+					cursor.target( search,true );
 
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
@@ -308,7 +338,7 @@
 					}
 
 					// Find the last one, and force the cursor to the right of it.
-					cursor.target( search,true,false );
+					cursor.target( search,false );
 
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
@@ -368,6 +398,7 @@
 		},
 		// Handler for keypress:
 		keypress: function (evt){
+			return console.log("IGNORING KEYPRESS");
 			if (!cursor.isReady()) return;
 			if (inputSuppressNextKeypress) return;
 			console.log("keypress")
@@ -392,10 +423,6 @@
 
 
 	};
-
-	// Stash the blinker right away.
-	cursor.stash();
-
 
 	// Public declarations:
 
@@ -429,7 +456,12 @@
 	 on.call(document, 'keydown', cursor.keydown);
 	 on.call(document, 'keypress', cursor.keypress);
 	 on.call(document, 'click', function(){
-	 	cursor.stash();
+	 	cursor.untarget();
+	 });
+	 on.call(cursor.hijacker, 'input', function(){
+	 	var buffer = cursor.hijacker.value;
+	 	cursor.hijacker.value='';
+	 	console.log("Buffer: "+buffer)
 	 });
 
 
