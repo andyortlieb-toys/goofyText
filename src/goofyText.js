@@ -3,6 +3,23 @@
 	// Support methods...
 
 	/**
+	 * findPos...
+	 * Thank you, http://txt.binnyva.com/2007/06/find-elements-position-using-javascript/
+	 **/
+	function findPos(obj) {
+		var curleft = curtop = 0;
+		if (obj.offsetParent) {
+			curleft = obj.offsetLeft
+			curtop = obj.offsetTop
+			while (obj = obj.offsetParent) {
+				curleft += obj.offsetLeft
+				curtop += obj.offsetTop
+			}
+		}
+		return [curleft,curtop];
+	}
+
+	/**
 	 * private method on
 	 * enables events, intended for DOM objects.	 
 	 */
@@ -190,6 +207,10 @@
 				} else {
 					cursor.blinker.style.borderLeftColor = cursor.nextColor;	
 				}
+
+				var xy = findPos(cursor.blinker);
+				cursor.hijacker.style.left=''+xy[0]+'px';
+				cursor.hijacker.style.top=''+xy[1]+'px';				
 				
 			}
 
@@ -230,6 +251,7 @@
 				cursor.blinker.style.marginLeft='-2px';
 				cursor.blinker.forceRight = false;
 			}
+
 			cursor.cycle( true );
 			cursor.preventUntarget = true;
 			cursor.hijacker.click();
@@ -500,18 +522,18 @@
 	 		setTimeout( cursor.processHijacker, 5);
 	 	})
 	 }
-
-	 console.log("HIJACKER HAVE? (oninput, onchange)", cursor.hijacker.oninput!==undefined, cursor.hijacker.onchange!==undefined);
-
 	 
 	 cursor.hijacker.style.position='absolute';
 	 cursor.hijacker.style.left='0px';
 	 cursor.hijacker.style.top='0px';
-	 cursor.hijacker.style.width='55px';
-	 cursor.hijacker.style.height='55px';
+	 cursor.hijacker.style.width='10px';
+	 cursor.hijacker.style.height='10px';
+	 cursor.hijacker.style.padding='0px';
+	 cursor.hijacker.style.border='0px';
+	 cursor.hijacker.style.margin='0px';
+	 cursor.hijacker.style.overflow='hidden';
+	 cursor.hijacker.style.backgroundColor='red'; // FIXME
 	 document.body.appendChild(cursor.hijacker);
-	 cursor.hijacker.onChange
-
 
 	// Debugging info-- cut from builds
 	if (true){ 
