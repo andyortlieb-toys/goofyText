@@ -263,22 +263,24 @@
 			
 			if (cursor.blinker.forceRight){
 				// Put the new node AFTER the blinker, and target the new node.
-
+				cursor.blinker.parentNode.insertBefore(node, cursor.blinker.nextSibling);
+				cursor.target(cursor.blinker.nextSibling);
 			} else {
 				// Business as usual.
+				cursor.blinker.parentNode.insertBefore(node, cursor.blinker);
 
 			}
 
 			return cursor;
 
 		},
-		putChar: function(char){
-			console.log(char);
+		putChar: function(tChr){
+			cursor.putNode(mkCharNode(tChr));
 		},
 		putText: function(text){
 
 			for (var i=0; i<text.length; ++i){
-				cursor.putChar(text.charAt(0));
+				cursor.putChar(text.charAt(i));
 			}
 
 		},
