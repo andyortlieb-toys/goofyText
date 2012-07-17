@@ -342,13 +342,11 @@
 					// Stupid thing to stop the browser from going back.
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
-					inputSuppressNextKeypress=true;
 					break;
 
 				case 9: // tab
 					cursor.untarget();
 
-					inputSuppressNextKeypress=true;
 					break;
 
 /*				case 32: // space
@@ -378,7 +376,6 @@
 
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
-					inputSuppressNextKeypress=true;
 					return false;
 					break;
 
@@ -399,7 +396,6 @@
 
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
-					inputSuppressNextKeypress=true;
 					return false;
 					break;
 
@@ -418,7 +414,6 @@
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault){ evt.preventDefault(); }
 
-					inputSuppressNextKeypress=true;
 					return false;
 					break;
 
@@ -437,7 +432,6 @@
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault){ evt.preventDefault(); }
 
-					inputSuppressNextKeypress=true;
 					return false;
 					break;
 
@@ -451,39 +445,14 @@
 					}
 					
 
-					inputSuppressNextKeypress = true;
 					break;
 
 				default:
-					inputSuppressNextKeypress=false;
-
+					console.log("Whats a whaaaa?")
 			}
 
-		},
-		// Handler for keypress:
-		keypress: function (evt){
-			return;
-			return console.log("IGNORING KEYPRESS");
-			if (!cursor.isReady()) return;
-			if (inputSuppressNextKeypress) return;
-			console.log("keypress")
-
-			// Figure out other reasons to get out of this place.
-			var evt = evt || window.event
-			var chr = String.fromCharCode(evt.keyCode || evt.which)
-			var newChrNode;
-
-
-			//console.log("keypress", evt.keyCode)
-
-
-			if (evt.keyCode===13){ chr = '\n' }
-
-			if (chr){
-				newChrNode = mkCharNode(chr);
-				cursor.blinker.parentNode.insertBefore(newChrNode, cursor.blinker);	
-			}
 		}
+
 
 
 
@@ -519,7 +488,6 @@
 	 ****************************************/
 
 	on.call(cursor.hijacker, 'keydown', cursor.keydown);
-	on.call(cursor.hijacker, 'keypress', cursor.keypress);
 
 	on.call(document, 'click', function(){
 	 	cursor.untarget();
