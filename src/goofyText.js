@@ -335,8 +335,14 @@
 			switch (evt.keyCode){
 				case 8: // backspace
 					
-					if (cursor.blinker.previousSibling){
-						cursor.blinker.parentNode.removeChild(cursor.blinker.previousSibling)
+					if (cursor.blinker.forceRight){
+						var removeGuy = cursor.blinker;
+						cursor.target(cursor.blinker.nextSibling||cursor.blinker.previousSibling, !cursor.blinker.nextSibling);
+						removeGuy.parentNode.removeChild(removeGuy);
+					} else {
+						if (cursor.blinker.previousSibling){
+							cursor.blinker.parentNode.removeChild(cursor.blinker.previousSibling)
+						}
 					}
 					
 					// Stupid thing to stop the browser from going back.
