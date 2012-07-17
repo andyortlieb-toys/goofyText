@@ -317,8 +317,18 @@
 			cursor.putNode(mkCharNode(tChr));
 		},
 		putText: function(text){
-
+			var ieProblem = !!window.attachEvent; // Detect the ie problem.
+			var lastCharPut=false
 			for (var i=0; i<text.length; ++i){
+				if (			i>1 // Text was probably pasted.
+								&& ieProblem
+								&& lastCharPut
+								&& text.charAt(i)==='\n'){
+					console.log("Continuing")
+					lastCharPut = false;
+					continue
+				}
+				lastCharPut = true;
 				cursor.putChar(text.charAt(i));
 			}
 
@@ -353,6 +363,15 @@
 				case 9: // tab
 					cursor.untarget();
 
+					break;
+
+				case 13: // NewLine...
+					console.log("Enter");
+					cursor.putChar("\n");
+
+					evt.keyCode = 0; // The less obvious approach
+					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
+					return false;
 					break;
 
 /*				case 32: // space
