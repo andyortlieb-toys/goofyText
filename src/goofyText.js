@@ -74,6 +74,7 @@
 	 */
 	function mkCharNode (character){
 		var chrNode = document.createElement('span')
+		chrNode.goofyTextChr = true;
 
 		if ( character ==='\n' ) {
 			chrNode.innerHTML = "\n<br />";
@@ -302,7 +303,12 @@
 			if (cursor.blinker.forceRight){
 				// Put the new node AFTER the blinker, and target the new node.
 				cursor.blinker.parentNode.insertBefore(node, cursor.blinker.nextSibling);
-				cursor.target(node.nextSibling || node, !node.nextSibling);
+				
+				if (node.nextSibling && node.nextSibling.goofyTextChr){
+					cursor.target(node.nextSibling);
+				} else {
+					cursor.target(node, true);
+				}
 			} else {
 				// Business as usual.
 				cursor.blinker.parentNode.insertBefore(node, cursor.blinker);
@@ -443,15 +449,19 @@
 					break;
 
 				case 39: // right
-
+					// Find the next place to the right that a cursor could be.
 					var search = cursor.blinker;
+
 					while (search !== null){
 						search = search.nextSibling;
-						if (search){
-							search.click();
+						if (search && search.goofyTextChr){
+							cursor.target(search, (search===cursor.blinker));
 							break;
+						} else if ( !cursor.blinker.forceRight ){
+							search = null;
 						}
 					}
+					if (!search) cursor.target(cursor.blinker, true);
 
 					// Prevent browser scrolling
 					evt.keyCode = 0; // The less obvious approach
@@ -518,30 +528,30 @@
 
 	on.call(document, 'click', function(){
 	 	cursor.untarget();
-	 });
+	});
 
-	 if (cursor.hijacker.oninput !== undefined){
-		 on.call(cursor.hijacker, 'input', function(){
-		 	cursor.processHijacker();
-		 });
-	 	
-	 } else {
-	 	on.call(cursor.hijacker, 'keydown', function(){
-	 		setTimeout( cursor.processHijacker, 5);
-	 	})
-	 }
-	 
-	 cursor.hijacker.style.position='absolute';
-	 cursor.hijacker.style.left='0px';
-	 cursor.hijacker.style.top='0px';
-	 cursor.hijacker.style.width='10px';
-	 cursor.hijacker.style.height='10px';
-	 cursor.hijacker.style.padding='0px';
-	 cursor.hijacker.style.border='0px';
-	 cursor.hijacker.style.margin='0px';
-	 cursor.hijacker.style.overflow='hidden';
-	 cursor.hijacker.style.backgroundColor='red'; // FIXME
-	 document.body.appendChild(cursor.hijacker);
+	if (cursor.hijacker.oninput !== undefined){
+	on.call(cursor.hijacker, 'input', function(){
+		cursor.processHijacker();
+	});
+		
+	} else {
+		on.call(cursor.hijacker, 'keydown', function(){
+			setTimeout( cursor.processHijacker, 5);
+		});
+	}
+
+	cursor.hijacker.style.position='absolute';
+	cursor.hijacker.style.left='0px';
+	cursor.hijacker.style.top='0px';
+	cursor.hijacker.style.width='10px';
+	cursor.hijacker.style.height='10px';
+	cursor.hijacker.style.padding='0px';
+	cursor.hijacker.style.border='0px';
+	cursor.hijacker.style.margin='0px';
+	cursor.hijacker.style.overflow='hidden';
+	cursor.hijacker.style.backgroundColor='red'; // FIXME
+	document.body.appendChild(cursor.hijacker);
 
 	// Debugging info-- cut from builds
 	if (true){ 
