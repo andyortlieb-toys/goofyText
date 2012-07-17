@@ -448,7 +448,9 @@
 					break;
 
 				default:
-					console.log("Whats a whaaaa?")
+					// FIXME: Should we scrap this default?
+					
+					break;
 			}
 
 		}
