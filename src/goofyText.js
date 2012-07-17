@@ -346,7 +346,7 @@
 					break;
 
 				case 9: // tab
-					cursor = null;
+					cursor.untarget();
 
 					inputSuppressNextKeypress=true;
 					break;
