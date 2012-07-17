@@ -228,7 +228,8 @@
 		// Method target puts a cursor around a chrNode
 		target: function(chrNode,forceRight){
 			if (cursor.blinker !== chrNode){
-				cursor.untarget(cursor.blinker);	
+				cursor.relieve(cursor.blinker);
+				cursor.untarget(cursor.blinker);
 			} else {
 				// It is the same. just switch sides.
 				forceRight = !cursor.blinker.forceRight;
