@@ -3,23 +3,29 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 	<body>
-		<h1>Vanilla...(Non-committal word-wrap...) </h1>
+		<h1>Editable div</h1>
+		<div class='goofyTextEditable' style='border:1px solid black;width:90%;'>AB</div>
+
+		<h1>Editable span in div</h1>
 		<div style='border:1px solid black;width:90%;'>
-			<span id='e1' class='goofyTextEditable'>AB</span>
+			<span class='goofyTextEditable'>AB</span>
 		</div>
 
-		<h1>Line-mode...</h1>
+
+		<h1>Editable span surrounded by other in-lines</h1>
+		<div style='border:1px solid black;width:90%;'>
+			<span style='background-color:blue'>A</span><span class='goofyTextEditable'>AB</span><span style='background-color:blue'>B</span>
+		</div>
+
+		<h1>Editable span in no-wrap div...</h1>
 		<div style='border:1px solid black;width:90%; overflow:scroll;'>
-			<span id='e2' style='white-space: nowrap;' class='goofyTextEditable'>Lorem ipsum aliqua proident veniam et quis consectetur esse dolore non Ut nulla dolor eu culpa. Lorem ipsum sint cupidatat non et adipisicing esse elit officia. 
+			<span style='white-space: nowrap;' class='goofyTextEditable'>Lorem ipsum aliqua proident veniam et quis consectetur esse dolore non Ut nulla dolor eu culpa. Lorem ipsum sint cupidatat non et adipisicing esse elit officia. 
 			proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </span>
 		</div>		
 
-		<h1>Not editable text...</h1>
-		<div style='border:1px solid black;width:90%;'>
-			<span id='e3' class='goofyTextEditable'>Lorem ipsum aliqua proident veniam et quis consectetur esse dolore non Ut nulla dolor eu culpa. Lorem ipsum sint cupidatat non et adipisicing esse elit officia.
-			 
-			proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </span>
-		</div>		
+		<h1>Editable no-wrap div...</h1>
+		<div style='border:1px solid black;width:90%; overflow:scroll;' class='goofyTextEditable'>Lorem ipsum aliqua proident veniam et quis consectetur esse dolore non Ut nulla dolor eu culpa. Lorem ipsum sint cupidatat non et adipisicing esse elit officia. 
+			proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>		
 
 		<h1>Textarea... </h1>
 		<textarea>Bla bla bla........</textarea>
@@ -34,8 +40,12 @@
 	<script type='text/javascript' src='../src/goofyText.js'></script>
 	<script type='text/javascript'>
 
-		goofyText.editor(punkychipsahoy = document.getElementById('e1'));
-		goofyText.editor(oioioi = document.getElementById('e2'));
+		;(function(){
+			var res = document.querySelectorAll('.goofyTextEditable');
+			for (var i=0; i<res.length; ++i){
+				goofyText.editor( window['ed'+i] = res[i]);
+			}
+		})();
 
 
 	</script>
