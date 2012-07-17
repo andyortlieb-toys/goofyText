@@ -433,10 +433,18 @@
 				case 37: // left
 
 					var search = cursor.blinker;
+
+
 					while (search !== null){
+						if (search.forceRight){
+							// Re-target the same node.
+							cursor.target(search, false);
+							break;
+						}
+
 						search = search.previousSibling;
-						if (search){
-							search.click();
+						if (search && search.goofyTextChr){
+							cursor.target(search, !search.nextSibling.goofyTextChr);
 							break;
 						}
 					}
