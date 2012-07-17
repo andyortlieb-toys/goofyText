@@ -404,7 +404,7 @@
 
 				case 37: // left
 
-					var search = cursor;
+					var search = cursor.blinker;
 					while (search !== null){
 						search = search.previousSibling;
 						if (search){
@@ -423,7 +423,7 @@
 
 				case 39: // right
 
-					var search = cursor;
+					var search = cursor.blinker;
 					while (search !== null){
 						search = search.nextSibling;
 						if (search){
