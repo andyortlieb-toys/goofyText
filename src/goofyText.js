@@ -301,7 +301,7 @@
 			if (cursor.blinker.forceRight){
 				// Put the new node AFTER the blinker, and target the new node.
 				cursor.blinker.parentNode.insertBefore(node, cursor.blinker.nextSibling);
-				cursor.target(node.nextSibling);
+				cursor.target(node.nextSibling || node, !node.nextSibling);
 			} else {
 				// Business as usual.
 				cursor.blinker.parentNode.insertBefore(node, cursor.blinker);
