@@ -42,16 +42,22 @@
 	</body>
 
 
-	<script type='text/javascript' src='../src/goofyText.js'></script>
+	
+	<script type='text/javascript' src='http://requirejs.org/docs/release/2.0.4/comments/require.js'></script>
 
 	<script type='text/javascript'>
 
-		goofyText.editor(ed_1=document.getElementById('ed1'));
-		goofyText.editor(ed_2=document.getElementById('ed2'));
-		goofyText.editor(ed_3=document.getElementById('ed3'));
-		goofyText.editor(ed_4=document.getElementById('ed4'));
-		goofyText.editor(ed_5=document.getElementById('ed5'));
-		goofyText.editor(ed_6=document.getElementById('ed6'));
+		require(['../src/goofyText.adapter.AMD'], function(goofyText){
+			
+			goofyText.editor(ed_1=document.getElementById('ed1'));
+			goofyText.editor(ed_2=document.getElementById('ed2'));
+			goofyText.editor(ed_3=document.getElementById('ed3'));
+			goofyText.editor(ed_4=document.getElementById('ed4'));
+			goofyText.editor(ed_5=document.getElementById('ed5'));
+			goofyText.editor(ed_6=document.getElementById('ed6'));
+			
+		});
+
 
 	</script>
 

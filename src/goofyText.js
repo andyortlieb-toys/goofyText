@@ -7,7 +7,7 @@
 	 * Thank you, http://txt.binnyva.com/2007/06/find-elements-position-using-javascript/
 	 **/
 	function findPos(obj) {
-		var curleft = curtop = 0;
+		var curtop, curleft = curtop = 0;
 		if (obj.offsetParent) {
 			curleft = obj.offsetLeft
 			curtop = obj.offsetTop
@@ -198,7 +198,7 @@
 		hijacker: document.createElement('textarea'),
 		//processHijacker...
 		processHijacker: function(){
-		 	buffer = cursor.hijacker.value;
+		 	var buffer = cursor.hijacker.value;
 		 	cursor.hijacker.value='';
 		 	cursor.putText(buffer);
 		},
@@ -429,6 +429,7 @@
 						search=search.previousSibling
 					}
 
+
 					// Find the last one, and force the cursor to the right of it.
 					cursor.target( search,false );
 
@@ -510,25 +511,25 @@
 
 	};
 
+	function editor(){
+		var content;
+		if (arguments.length){
+			for (var i=0; i<arguments.length; ++i){
+				initializeNode(arguments[i]);
+				setContent(arguments[i], content);
+			}
+
+		} else {
+			var element = document.createElement("DIV");
+			initializeNode(element);
+			return element;
+
+		}			
+	}
+
 	// Public declarations:
-
-	goofyText = {
-		editor: function(){
-			var content;
-			if (arguments.length){
-				for (var i=0; i<arguments.length; ++i){
-					initializeNode(arguments[i]);
-					setContent(arguments[i], content);
-				}
-
-			} else {
-				var element = document.createElement("DIV");
-				initializeNode(element);
-				return element;
-
-			}			
-		}
-	};
+	window['goofyText'] = {};
+	window['goofyText']['editor'] = editor;
 
 
 	/****************************************
@@ -572,20 +573,11 @@
 	if (true){ 
 		// Global
 		goofyTextDebug = {
-			cursor: cursor,
-			cursorAppearance: function(){
-				var testEl = document.createElement("DIV");
-				var testSpan;
-
-				cursor.cycle();
-
-
-			}
+			cursor: cursor
 		};
 
 		// Other debug junk
 
-		goofyTextDebug.cursorAppearance();
 		h = cursor.hijacker;
 
 
