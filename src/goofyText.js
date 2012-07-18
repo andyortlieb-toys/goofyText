@@ -74,17 +74,23 @@
 	 */
 	function mkCharNode (character){
 		var chrNode = document.createElement('span')
-		chrNode.goofyTextChr = true;
-
+		
 		if ( character ==='\n' ) {
-			chrNode.innerHTML = "\n<br />";
+
+			// inline-block span prevents lagging newlines.
+			// Without it, browsers don't show the newline until more text exists after it.
+			chrNode.innerHTML = "<br /><span style='display:inline-block;'></span>";
 			chrNode.isNewLine = true;
 
 		} else if (character===' ') {
+			// &nbsp inside span gives the best of both worlds:
+			// 1. sequential &nbsp; allows multiple spaces to appear side-by-side
+			// 2. span allows the lines to break/wrap themselves.
 			chrNode.innerHTML = "<span style='display:inline-block'>&nbsp;</span>";
 
 		} else if (character==='\t'){
-			chrNode.innerHTML = "<span style='display:inline-block'>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+			// Fixme: We might find a better way to represent this.
+			chrNode.innerHTML = "<span style='display:inline-block;'>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
 
 		} else {
 			if (chrNode.textContent!==undefined){
@@ -95,6 +101,7 @@
 			
 		}
 
+		chrNode.goofyTextChr = true;
 		// It Might makes sense to refactor this.  if we start calling .click() at any point.
 		on.call(chrNode, 'click', function(){
 			cursor.target(chrNode);
