@@ -193,7 +193,7 @@
 	// Information regarding where the cursor lives
 	var cursor = {
 		// The actual element that blinks.
-		blinker: null,
+		targetCharNode: null,
 		// The <TEXTAREA> that allows us to deal with input methods.
 		hijacker: document.createElement('textarea'),
 		//processHijacker...
@@ -213,16 +213,16 @@
 		// method to cycle the cursor.
 		cycle: function(update){
 			// Set the cursor color
-			if (cursor.blinker){
+			if (cursor.targetCharNode){
 				cursor.nextColor= update||(cursor.nextColor===cursor.colorB)?cursor.colorA:cursor.colorB;
 
-				if (cursor.blinker.forceRight){
-					cursor.blinker.style.borderRightColor = cursor.nextColor;
+				if (cursor.targetCharNode.forceRight){
+					cursor.targetCharNode.style.borderRightColor = cursor.nextColor;
 				} else {
-					cursor.blinker.style.borderLeftColor = cursor.nextColor;	
+					cursor.targetCharNode.style.borderLeftColor = cursor.nextColor;	
 				}
 
-				var xy = findPos(cursor.blinker);
+				var xy = findPos(cursor.targetCharNode);
 				// FIXME:
 				//cursor.hijacker.style.left=''+xy[0]+'px';
 				cursor.hijacker.style.top=''+xy[1]+'px';				
@@ -235,37 +235,37 @@
 		}, 
 		// Method target puts a cursor around a chrNode
 		target: function(chrNode,forceRight){
-			if (cursor.blinker !== chrNode){
-				cursor.relieve(cursor.blinker);
-				cursor.untarget(cursor.blinker);
+			if (cursor.targetCharNode !== chrNode){
+				cursor.relieve(cursor.targetCharNode);
+				cursor.untarget(cursor.targetCharNode);
 			} else if (forceRight === undefined){
 				// It is the same. just switch sides. (unless it's being set)
-				forceRight = !cursor.blinker.forceRight;
-				cursor.relieve(cursor.blinker);
+				forceRight = !cursor.targetCharNode.forceRight;
+				cursor.relieve(cursor.targetCharNode);
 			}
 
-			cursor.blinker = chrNode;
+			cursor.targetCharNode = chrNode;
 
 			// FIXME: Stupid stupid hack for ie7.
-			cursor.blinker.style.backgroundColor = cursor.blinker.style.backgroundColor||'transparent';
+			cursor.targetCharNode.style.backgroundColor = cursor.targetCharNode.style.backgroundColor||'transparent';
 
 			if (forceRight){
 				// Put the cursor to the right of chrNode.
-				// Style the blinker
-				cursor.blinker.style.borderRightWidth='2px';
-				cursor.blinker.style.borderRightStyle='solid';
-				cursor.blinker.style.borderRightColor='black';
-				cursor.blinker.style.marginRight='-2px';
-				cursor.blinker.forceRight = true;	
+				// Style the targetCharNode
+				cursor.targetCharNode.style.borderRightWidth='2px';
+				cursor.targetCharNode.style.borderRightStyle='solid';
+				cursor.targetCharNode.style.borderRightColor='black';
+				cursor.targetCharNode.style.marginRight='-2px';
+				cursor.targetCharNode.forceRight = true;	
 
 			} else {
 				// Put the cursor to the left of chrNode.
-				// Style the blinker
-				cursor.blinker.style.borderLeftWidth='2px';
-				cursor.blinker.style.borderLeftStyle='solid';
-				cursor.blinker.style.borderLeftColor='black';
-				cursor.blinker.style.marginLeft='-2px';
-				cursor.blinker.forceRight = false;
+				// Style the targetCharNode
+				cursor.targetCharNode.style.borderLeftWidth='2px';
+				cursor.targetCharNode.style.borderLeftStyle='solid';
+				cursor.targetCharNode.style.borderLeftColor='black';
+				cursor.targetCharNode.style.marginLeft='-2px';
+				cursor.targetCharNode.forceRight = false;
 			}
 
 			cursor.cycle( true );
@@ -279,10 +279,10 @@
 				cursor.preventUntarget = false;
 				return;
 			}
-			if (!cursor.blinker || !cursor.blinker.style) return ;
-			cursor.relieve(cursor.blinker);
+			if (!cursor.targetCharNode || !cursor.targetCharNode.style) return ;
+			cursor.relieve(cursor.targetCharNode);
 
-			cursor.blinker = null;
+			cursor.targetCharNode = null;
 		},
 		relieve: function(node){
 			if (node){
@@ -303,13 +303,13 @@
 
 		// isReady, whether or not the cursor is ready to handle keys
 		isReady: function(){
-			return cursor.blinker;
+			return cursor.targetCharNode;
 		},
 		putNode: function(node){
 			
-			if (cursor.blinker.forceRight){
-				// Put the new node AFTER the blinker, and target the new node.
-				cursor.blinker.parentNode.insertBefore(node, cursor.blinker.nextSibling);
+			if (cursor.targetCharNode.forceRight){
+				// Put the new node AFTER the targetCharNode, and target the new node.
+				cursor.targetCharNode.parentNode.insertBefore(node, cursor.targetCharNode.nextSibling);
 				
 				if (node.nextSibling && node.nextSibling.goofyTextChr){
 					cursor.target(node.nextSibling);
@@ -318,7 +318,7 @@
 				}
 			} else {
 				// Business as usual.
-				cursor.blinker.parentNode.insertBefore(node, cursor.blinker);
+				cursor.targetCharNode.parentNode.insertBefore(node, cursor.targetCharNode);
 				cursor.cycle(true)
 
 			}
@@ -358,13 +358,13 @@
 			switch (evt.keyCode){
 				case 8: // backspace
 					
-					if (cursor.blinker.forceRight){
-						var removeGuy = cursor.blinker;
-						cursor.target(cursor.blinker.nextSibling||cursor.blinker.previousSibling, !cursor.blinker.nextSibling);
+					if (cursor.targetCharNode.forceRight){
+						var removeGuy = cursor.targetCharNode;
+						cursor.target(cursor.targetCharNode.nextSibling||cursor.targetCharNode.previousSibling, !cursor.targetCharNode.nextSibling);
 						removeGuy.parentNode.removeChild(removeGuy);
 					} else {
-						if (cursor.blinker.previousSibling){
-							cursor.blinker.parentNode.removeChild(cursor.blinker.previousSibling)
+						if (cursor.targetCharNode.previousSibling){
+							cursor.targetCharNode.parentNode.removeChild(cursor.targetCharNode.previousSibling)
 						}
 					}
 					
@@ -398,7 +398,7 @@
 					break;*/
 
 				case 35: // End
-					var search = cursor.blinker;
+					var search = cursor.targetCharNode;
 					
 					// Find the thing we want to hit... on the same line.
 					while ( 
@@ -418,7 +418,7 @@
 					break;
 
 				case 36: // Home
-					var search = cursor.blinker;
+					var search = cursor.targetCharNode;
 					
 					// Find the thing we want to hit... on the same line.
 					while ( 
@@ -439,7 +439,7 @@
 
 				case 37: // left
 
-					var search = cursor.blinker;
+					var search = cursor.targetCharNode;
 
 
 					while (search !== null){
@@ -465,18 +465,18 @@
 
 				case 39: // right
 					// Find the next place to the right that a cursor could be.
-					var search = cursor.blinker;
+					var search = cursor.targetCharNode;
 
 					while (search !== null){
 						search = search.nextSibling;
 						if (search && search.goofyTextChr){
-							cursor.target(search, (search===cursor.blinker));
+							cursor.target(search, (search===cursor.targetCharNode));
 							break;
-						} else if ( !cursor.blinker.forceRight ){
+						} else if ( !cursor.targetCharNode.forceRight ){
 							search = null;
 						}
 					}
-					if (!search) cursor.target(cursor.blinker, true);
+					if (!search) cursor.target(cursor.targetCharNode, true);
 
 					// Prevent browser scrolling
 					evt.keyCode = 0; // The less obvious approach
@@ -486,12 +486,12 @@
 					break;
 
 				case 46: // del
-					if (cursor.blinker.forceRight){
-						if (cursor.blinker.nextSibling){ cursor.blinker.parentNode.removeChild(cursor.blinker.nextSibling)}
+					if (cursor.targetCharNode.forceRight){
+						if (cursor.targetCharNode.nextSibling){ cursor.targetCharNode.parentNode.removeChild(cursor.targetCharNode.nextSibling)}
 					} else {
-						var removeGuy = cursor.blinker;
-						cursor.target(cursor.blinker.nextSibling || cursor.blinker.previousSibling);
-						cursor.blinker.parentNode.removeChild(removeGuy)
+						var removeGuy = cursor.targetCharNode;
+						cursor.target(cursor.targetCharNode.nextSibling || cursor.targetCharNode.previousSibling);
+						cursor.targetCharNode.parentNode.removeChild(removeGuy)
 					}
 					
 
