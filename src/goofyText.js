@@ -238,8 +238,8 @@
 			if (cursor.blinker !== chrNode){
 				cursor.relieve(cursor.blinker);
 				cursor.untarget(cursor.blinker);
-			} else {
-				// It is the same. just switch sides.
+			} else if (forceRight === undefined){
+				// It is the same. just switch sides. (unless it's being set)
 				forceRight = !cursor.blinker.forceRight;
 				cursor.relieve(cursor.blinker);
 			}
@@ -410,7 +410,7 @@
 					}
 
 					// Find the last one, and force the cursor to the right of it.
-					cursor.target( search,true );
+					cursor.target( search, !search.isNewLine );
 
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
