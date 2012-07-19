@@ -60,7 +60,7 @@
 	 */
 	 // FIXME: This needs some TLC... it doesn't work.
 	function scrollIntoViewIfNeeded (node){
-
+		console.log("scrollIntoViewIfNeeded", node);
 		if (node.scrollIntoViewIfNeeded) return node.scrollIntoViewIfNeeded();
 
 		// FIXME: Awful awful in IE, Firefox, bleah
@@ -79,7 +79,7 @@
 
 			// inline-block span prevents lagging newlines.
 			// Without it, browsers don't show the newline until more text exists after it.
-			chrNode.innerHTML = "<br /><span style='display:inline-block;'></span>";
+			chrNode.innerHTML = "\n<br /><span style='display:inline-block;'></span>";
 			chrNode.isNewLine = true;
 
 		} else if (character===' ') {
@@ -272,6 +272,8 @@
 			cursor.hijacker.click();
 			cursor.hijacker.focus();
 			cursor.preventUntarget = true;
+
+			scrollIntoViewIfNeeded( cursor.targetCharNode );
 		},
 		untarget: function(){
 			if (cursor.preventUntarget){
@@ -305,7 +307,6 @@
 			return cursor.targetCharNode;
 		},
 		putNode: function(node){
-
 			if (cursor.targetCharNode.forceRight){
 				// Put the new node AFTER the targetCharNode, and target the new node.
 				cursor.targetCharNode.parentNode.insertBefore(node, cursor.targetCharNode.nextSibling);
@@ -321,7 +322,7 @@
 				cursor.cycle(true)
 
 			}
-
+			scrollIntoViewIfNeeded(node);
 			return cursor;
 
 		},
@@ -378,7 +379,6 @@
 					break;
 
 				case 13: // NewLine...
-					console.log("Enter");
 					cursor.putChar("\n");
 
 					evt.keyCode = 0; // The less obvious approach
