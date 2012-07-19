@@ -471,20 +471,15 @@
 						search = search.nextSibling;
 						if (search && search.goofyTextChr){
 							cursor.target(search, (search===cursor.targetCharNode));
-							console.log("a'")
 							break;
 
 						} else if ( !cursor.targetCharNode.forceRight ){
 							search = null;
-							console.log("b'")
 
 						}
 					}
 
-					if (!search) {
-						cursor.target(cursor.targetCharNode, true);
-						console.log("c'")
-					}
+					if (!search) { cursor.target(cursor.targetCharNode, true); }
 
 					// Prevent browser scrolling
 					evt.keyCode = 0; // The less obvious approach
