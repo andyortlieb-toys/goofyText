@@ -25,8 +25,9 @@
 	}
 
 
+	// Determines if node `b` shares a common Y with node `a`
 	function sameLattitude(a,b){
-		//var aTop, aBot, bTop, bBot;
+		var aTop, aBot, bTop, bBot;
 
 		if ( a && b && a.parentNode === b.parentNode){
 
@@ -36,6 +37,9 @@
 			bBot = bTop+b.offsetHeight;
 
 			// Find the the things that cannot be...
+
+			// B is newline? Don't bother!
+			if (b.isNewLine) return false;
 
 			// Bottoms are above Tops
 			if ( aBot < bTop || bBot < aTop ) {
@@ -450,7 +454,7 @@
 					var search = cursor.targetCharNode;
 
 					// Find the thing we want to hit... on the same line.
-					while (sameLattitude(search, search.nextSibling)){
+					while (sameLattitude(cursor.targetCharNode, search.nextSibling)){
 						search=search.nextSibling
 					}
 
@@ -466,7 +470,7 @@
 					var search = cursor.targetCharNode;
 
 					// Find the thing we want to hit... on the same line.
-					while ( sameLattitude(search, search.previousSibling) ){
+					while ( sameLattitude(cursor.targetCharNode, search.previousSibling) ){
 						search=search.previousSibling
 					}
 
