@@ -24,13 +24,15 @@
 
 		<h1>Editable span in no-wrap div...</h1>
 		<div style='border:1px solid black;width:90%; overflow:scroll;'>
-			<span id='ed5' style='white-space: nowrap;' class='goofyTextEditable'>Lorem ipsum aliqua proident veniam et quis consectetur esse dolore non Ut nulla dolor eu culpa. Lorem ipsum sint cupidatat non et adipisicing esse elit officia. 
+			<span id='ed5' style='white-space: nowrap;' class='goofyTextEditable'>Lorem ipsum aliqua proident
+
+				veniam et quis consectetur esse dolore non Ut nulla dolor eu culpa. Lorem ipsum sint cupidatat non et adipisicing esse elit officia.
 			proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </span>
-		</div>		
+		</div>
 
 		<h1>Editable no-wrap div...</h1>
-		<div id='ed6' style='border:1px solid black;width:90%; overflow:scroll;' class='goofyTextEditable'>Lorem ipsum aliqua proident veniam et quis consectetur esse dolore non Ut nulla dolor eu culpa. Lorem ipsum sint cupidatat non et adipisicing esse elit officia. 
-			proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>		
+		<div id='ed6' style='border:1px solid black;width:90%; overflow:scroll;' class='goofyTextEditable'>Lorem ipsum aliqua proident veniam et quis consectetur esse dolore non Ut nulla dolor eu culpa. Lorem ipsum sint cupidatat non et adipisicing esse elit officia.
+			proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
 
 		<h1>Textarea... </h1>
 		<textarea>Bla bla bla........</textarea>
@@ -38,24 +40,24 @@
 		<h2> input... </h2>
 		<input type='text' value='hi hi hi', style='width:90%'></input>
 
-		
+
 	</body>
 
 
-	
+
 	<script type='text/javascript' src='http://requirejs.org/docs/release/2.0.4/comments/require.js'></script>
 
 	<script type='text/javascript'>
 
 		require(['../src/goofyText.adapter.AMD'], function(goofyText){
-			
+
 			goofyText.editor(ed_1=document.getElementById('ed1'));
 			goofyText.editor(ed_2=document.getElementById('ed2'));
 			goofyText.editor(ed_3=document.getElementById('ed3'));
 			goofyText.editor(ed_4=document.getElementById('ed4'));
 			goofyText.editor(ed_5=document.getElementById('ed5'));
 			goofyText.editor(ed_6=document.getElementById('ed6'));
-			
+
 		});
 
 

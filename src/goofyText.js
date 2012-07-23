@@ -1,3 +1,6 @@
+
+
+
 ;(function(){
 
 	// Support methods...
@@ -19,6 +22,52 @@
 		}
 
 		return [curleft,curtop];
+	}
+
+
+	function sameLattitude(a,b){
+		//var aTop, aBot, bTop, bBot;
+
+		if ( a && b && a.parentNode === b.parentNode){
+
+			aTop = a.offsetTop;
+			aBot = aTop+a.offsetHeight;
+			bTop = b.offsetTop;
+			bBot = bTop+b.offsetHeight;
+
+			// Find the the things that cannot be...
+
+			// Bottoms are above Tops
+			if ( aBot < bTop || bBot < aTop ) {
+				console.log("a");
+				return false;
+			}
+
+			// Tops are below bottoms...
+			if ( aTop > bBot || bTop > aBot ) {
+				console.log("b");
+				return false;
+			}
+
+			// If tops equal bottoms... their bottoms better also.
+			if ( aTop === bBot ){
+				console.log("c");
+				return ( aBot === bBot )
+			}
+			if ( bTop === aBot ){
+				console.log("d");
+				return ( bBot === aBot );
+			}
+
+
+			// Find the things that make it so...
+
+			return true;
+
+
+		}
+
+		return false;
 	}
 
 	/**
@@ -60,7 +109,7 @@
 	 */
 	 // FIXME: This needs some TLC... it doesn't work.
 	function scrollIntoViewIfNeeded (node){
-		console.log("scrollIntoViewIfNeeded", node);
+		//console.log("scrollIntoViewIfNeeded", node);
 		if (node.scrollIntoViewIfNeeded) return node.scrollIntoViewIfNeeded();
 
 		// FIXME: Awful awful in IE, Firefox, bleah
@@ -235,6 +284,7 @@
 		},
 		// Method target puts a cursor around a chrNode
 		target: function(chrNode,forceRight){
+			console.log('k', k=chrNode);
 			if (cursor.targetCharNode !== chrNode){
 				cursor.untarget(cursor.targetCharNode);
 			} else if (forceRight === undefined){
@@ -400,11 +450,7 @@
 					var search = cursor.targetCharNode;
 
 					// Find the thing we want to hit... on the same line.
-					while (
-							search.parentNode && search.nextSibling && search.nextSibling.parentNode
-							&& (search.parentNode === search.nextSibling.parentNode)
-							&& (search.offsetTop === search.nextSibling.offsetTop )
-					){
+					while (sameLattitude(search, search.nextSibling)){
 						search=search.nextSibling
 					}
 
@@ -420,11 +466,7 @@
 					var search = cursor.targetCharNode;
 
 					// Find the thing we want to hit... on the same line.
-					while (
-							search.parentNode && search.previousSibling && search.previousSibling.parentNode
-							&& (search.parentNode === search.previousSibling.parentNode)
-							&& (search.offsetTop === search.previousSibling.offsetTop )
-					){
+					while ( sameLattitude(search, search.previousSibling) ){
 						search=search.previousSibling
 					}
 
