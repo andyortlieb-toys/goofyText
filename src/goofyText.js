@@ -278,6 +278,8 @@
 		targetCharNode: null,
 		// Cache the target editor
 		targetEditor: null,
+		// The cursor thing that blinks...
+		blinker: document.createElement('div'),
 		//processHijacker...
 		processHijacker: function(){
 			var hijacker = cursor.targetEditor.hijacker;
@@ -299,11 +301,7 @@
 			if (cursor.targetCharNode){
 				cursor.nextColor= update||(cursor.nextColor===cursor.colorB)?cursor.colorA:cursor.colorB;
 
-				if (cursor.targetCharNode.forceRight){
-					cursor.targetCharNode.style.borderRightColor = cursor.nextColor;
-				} else {
-					cursor.targetCharNode.style.borderLeftColor = cursor.nextColor;
-				}
+				cursor.blinker.style.backgroundColor = cursor.nextColor;
 
 				var x = cursor.targetCharNode.offsetLeft;
 				var y = cursor.targetCharNode.offsetTop;
@@ -311,6 +309,19 @@
 				//cursor.targetEditor.hijacker.style.left=''+xy[0]+'px';
 				cursor.targetEditor.hijacker.style.left=''+x+'px';
 				cursor.targetEditor.hijacker.style.top=''+y+'px';
+
+				cursor.targetEditor.insertBefore( cursor.blinker, cursor.targetEditor.firstChild );
+
+				cursor.blinker.style.top=''+y+'px';
+
+				if (cursor.targetCharNode.forceRight){
+					//cursor.targetCharNode.style.borderRightColor = cursor.nextColor;
+					cursor.blinker.style.left=''+(x+cursor.targetCharNode.offsetWidth)+'px';
+
+				} else {
+					//cursor.targetCharNode.style.borderLeftColor = cursor.nextColor;
+					cursor.blinker.style.left=''+x+'px';
+				}
 
 			}
 
@@ -334,7 +345,7 @@
 			// FIXME: Stupid stupid hack for ie7.
 			cursor.targetCharNode.style.backgroundColor = cursor.targetCharNode.style.backgroundColor||'transparent';
 
-			if (forceRight){
+			/*if (forceRight){
 				// Put the cursor to the right of chrNode.
 				// Style the targetCharNode
 				cursor.targetCharNode.style.borderRightWidth='2px';
@@ -351,7 +362,9 @@
 				cursor.targetCharNode.style.borderLeftColor='black';
 				cursor.targetCharNode.style.marginLeft='-2px';
 				cursor.targetCharNode.forceRight = false;
-			}
+			}*/
+
+			cursor.targetCharNode.forceRight = forceRight;
 
 			cursor.cycle( true );
 			cursor.preventUntarget = true;
@@ -626,6 +639,11 @@
 	 	cursor.untarget();
 	});
 
+	cursor.blinker.style.position='absolute';
+	cursor.blinker.style.width='2px';
+	cursor.blinker.style.height='1em';
+	cursor.blinker.style.backgroundColor='purple';
+
 
 	// Debugging info-- cut from builds
 	if (true){
@@ -633,6 +651,8 @@
 		goofyTextDebug = {
 			cursor: cursor
 		};
+
+		b=cursor.blinker;
 
 	}
 
