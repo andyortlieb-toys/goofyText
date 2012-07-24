@@ -5,26 +5,6 @@
 
 	// Support methods...
 
-	/**
-	 * findPos...
-	 * Thank you, http://txt.binnyva.com/2007/06/find-elements-position-using-javascript/
-	 **/
-	function findPos(obj) {
-		var curtop, curleft = curtop = 0;
-		if (obj.offsetParent) {
-			curleft = obj.offsetLeft
-			curtop = obj.offsetTop
-			// FIXME: This really needs some TLC
-			while (obj = obj.offsetParent) {
-				curleft += obj.offsetLeft ;
-				curtop += obj.offsetTop ;
-			}
-		}
-
-		return [curleft,curtop];
-	}
-
-
 	// Determines if node `b` shares a common Y with node `a`
 	function sameLattitude(a,b){
 		var aTop, aBot, bTop, bBot;
@@ -215,6 +195,7 @@
 
 	function mkHijacker(){
 		var hijacker = document.createElement('textarea');
+		//hijacker.wrapper = document.createElement('div');
 
 		on.call(hijacker, 'keydown', cursor.keydown);
 
@@ -231,18 +212,32 @@
 			});
 		}
 
-		hijacker.style.position='absolute';
+		hijacker.style.position='relative';
 		hijacker.style.left='0px';
 		hijacker.style.top='0px';
-		hijacker.style.width='10px';
-		hijacker.style.height='10px';
+		hijacker.style.width='7px';
+		hijacker.style.height='7px';
 		hijacker.style.padding='0px';
 		hijacker.style.border='0px';
 		hijacker.style.margin='0px';
 		hijacker.style.overflow='hidden';
 		hijacker.style.backgroundColor='red'; // FIXME
 
+		// hijacker.wrapper.style.position='absolute';
+		// hijacker.wrapper.style.display='inline-block';
+		// hijacker.wrapper.style.left='0px';
+		// hijacker.wrapper.style.top='0px';
+
+		// hijacker.wrapper.style.backgroundColor='orange';
+		// hijacker.wrapper.style.width='5px';
+		// hijacker.wrapper.style.height='5px';
+
+		// hijacker.wrapper.appendChild(hijacker);
+		hijacker.wrapper = hijacker;
+
+
 		return hijacker;
+
 
 	};
 
@@ -250,6 +245,8 @@
 	function initializeNode(node){
 		if (node.goofyTextInitialized){ return; }
 		node.goofyTextInitialized = true;
+
+		node.style.position='relative'
 
 		var originalContent = getOriginalContent(node);
 		node.innerHTML = '';
@@ -264,7 +261,7 @@
 		})
 
 		node.hijacker = mkHijacker(node);
-		node.appendChild(node.hijacker);
+		node.insertBefore(node.hijacker.wrapper, node.firstChild);
 
 		return node;
 	}
@@ -276,9 +273,11 @@
 	var cursor = {
 		// The actual element that blinks.
 		targetCharNode: null,
+		// Cache the target editor
+		targetEditor: null,
 		//processHijacker...
 		processHijacker: function(){
-			var hijacker = cursor.getHijacker();
+			var hijacker = cursor.targetEditor.hijacker;
 		 	var buffer = hijacker.value;
 		 	hijacker.value='';
 		 	cursor.putText(buffer);
@@ -303,11 +302,12 @@
 					cursor.targetCharNode.style.borderLeftColor = cursor.nextColor;
 				}
 
-				var xy = findPos(cursor.targetCharNode);
+				var x = cursor.targetCharNode.offsetLeft;
+				var y = cursor.targetCharNode.offsetTop;
 				// FIXME:
-				//cursor.getHijacker().style.left=''+xy[0]+'px';
-				cursor.getHijacker().style.top=''+xy[1]+'px';
-				cursor.getHijacker().style.left=''+xy[0]+'px';
+				//cursor.targetEditor.hijacker.style.left=''+xy[0]+'px';
+				cursor.targetEditor.hijacker.style.left=''+x+'px';
+				cursor.targetEditor.hijacker.style.top=''+y+'px';
 
 			}
 
@@ -326,6 +326,7 @@
 			cursor.relieve(cursor.targetCharNode);
 
 			cursor.targetCharNode = chrNode;
+			cursor.targetEditor = cursor.getEditor(chrNode);
 
 			// FIXME: Stupid stupid hack for ie7.
 			cursor.targetCharNode.style.backgroundColor = cursor.targetCharNode.style.backgroundColor||'transparent';
@@ -351,8 +352,8 @@
 
 			cursor.cycle( true );
 			cursor.preventUntarget = true;
-			cursor.getHijacker().click();
-			cursor.getHijacker().focus();
+			cursor.targetEditor.hijacker.click();
+			cursor.targetEditor.hijacker.focus();
 			cursor.preventUntarget = true;
 
 			scrollIntoViewIfNeeded( cursor.targetCharNode );
@@ -394,12 +395,6 @@
 			var s = cursor.targetCharNode;
 			while ( s !== null && !s.goofyTextInitialized ){s=s.parentNode}
 			return s;
-		},
-
-		// getHijacker, gets the hijacker for the current cursor location.
-		getHijacker: function(){
-			var ed = cursor.getEditor();
-			if (ed) return ed.hijacker;
 		},
 
 		putNode: function(node){
@@ -640,11 +635,6 @@
 		goofyTextDebug = {
 			cursor: cursor
 		};
-
-		// Other debug junk
-
-		h = cursor.getHijacker();
-
 
 	}
 
