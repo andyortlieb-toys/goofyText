@@ -195,7 +195,6 @@
 
 	function mkHijacker(){
 		var hijacker = document.createElement('textarea');
-		//hijacker.wrapper = document.createElement('div');
 
 		on.call(hijacker, 'keydown', cursor.keydown);
 
@@ -215,25 +214,29 @@
 		hijacker.style.position='relative';
 		hijacker.style.left='0px';
 		hijacker.style.top='0px';
-		hijacker.style.width='7px';
-		hijacker.style.height='7px';
+		hijacker.style.width='1px';
+		hijacker.style.height='1px';
 		hijacker.style.padding='0px';
 		hijacker.style.border='0px';
 		hijacker.style.margin='0px';
 		hijacker.style.overflow='hidden';
 		hijacker.style.backgroundColor='red'; // FIXME
 
-		// hijacker.wrapper.style.position='absolute';
-		// hijacker.wrapper.style.display='inline-block';
-		// hijacker.wrapper.style.left='0px';
-		// hijacker.wrapper.style.top='0px';
 
-		// hijacker.wrapper.style.backgroundColor='orange';
-		// hijacker.wrapper.style.width='5px';
-		// hijacker.wrapper.style.height='5px';
+		hijacker.wrapper = document.createElement('div');
+		hijacker.wrapper.style.position='absolute';
+		hijacker.wrapper.style.display='inline-block';
+		hijacker.wrapper.style.left='1px';
+		hijacker.wrapper.style.top='1px';
 
-		// hijacker.wrapper.appendChild(hijacker);
-		hijacker.wrapper = hijacker;
+		hijacker.wrapper.style.backgroundColor='orange';
+		hijacker.wrapper.style.width='0px';
+		hijacker.wrapper.style.height='0px';
+		//hijacker.wrapper.style.overflow='hidden';
+
+		hijacker.wrapper.appendChild(hijacker);
+
+		//hijacker.wrapper = hijacker;
 
 
 		return hijacker;
