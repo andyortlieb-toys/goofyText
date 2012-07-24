@@ -137,6 +137,7 @@
 		} else if (character==='\t'){
 			// Fixme: We might find a better way to represent this.
 			chrNode.innerHTML = "<span style='display:inline-block;'>&nbsp;&nbsp;&nbsp;&nbsp;</span>";
+			chrNode.isTab = true;
 
 		} else {
 			if (chrNode.textContent!==undefined){
@@ -212,6 +213,44 @@
 
 	}
 
+	function mkHijacker(){
+		var hijacker = document.createElement('textarea');
+		var hijackWrapper = document.createElement('div');
+
+		on.call(hijacker, 'keydown', cursor.keydown);
+
+		if (hijacker.oninput !== undefined){
+		on.call(hijacker, 'input', function(){
+			cursor.processHijacker(hijacker);
+		});
+
+		} else {
+			on.call(hijacker, 'keydown', function(){
+				setTimeout( function(){
+					cursor.processHijacker(hijacker)
+				}, 5);
+			});
+		}
+
+		hijacker.style.position='absolute';
+		hijacker.style.left='0px';
+		hijacker.style.top='0px';
+		hijacker.style.width='10px';
+		hijacker.style.height='10px';
+		hijacker.style.padding='0px';
+		hijacker.style.border='0px';
+		hijacker.style.margin='0px';
+		hijacker.style.overflow='hidden';
+		hijacker.style.backgroundColor='red'; // FIXME
+
+		hijackWrapper.appendChild(hijacker);
+		hijackWrapper.hijacker = hijacker;
+
+		return hijackWrapper;
+
+	};
+
+
 	function initializeNode(node){
 		if (node.goofyTextInitialized){ return; }
 		node.goofyTextInitialized = true;
@@ -228,7 +267,9 @@
 			console.log("STUB: Search for the last place a cursor could go before this point.");
 		})
 
-
+		node.hijackerWrapper = mkHijacker(node);
+		node.hijacker = node.hijackerWrapper.hijacker;
+		node.appendChild(node.hijacker);
 
 		return node;
 	}
@@ -240,12 +281,11 @@
 	var cursor = {
 		// The actual element that blinks.
 		targetCharNode: null,
-		// The <TEXTAREA> that allows us to deal with input methods.
-		hijacker: document.createElement('textarea'),
 		//processHijacker...
 		processHijacker: function(){
-		 	var buffer = cursor.hijacker.value;
-		 	cursor.hijacker.value='';
+			var hijacker = cursor.getHijacker();
+		 	var buffer = hijacker.value;
+		 	hijacker.value='';
 		 	cursor.putText(buffer);
 		},
 		// The next color of the cursor:
@@ -270,8 +310,9 @@
 
 				var xy = findPos(cursor.targetCharNode);
 				// FIXME:
-				//cursor.hijacker.style.left=''+xy[0]+'px';
-				cursor.hijacker.style.top=''+xy[1]+'px';
+				//cursor.getHijacker().style.left=''+xy[0]+'px';
+				cursor.getHijacker().style.top=''+xy[1]+'px';
+				cursor.getHijacker().style.left=''+xy[0]+'px';
 
 			}
 
@@ -315,8 +356,8 @@
 
 			cursor.cycle( true );
 			cursor.preventUntarget = true;
-			cursor.hijacker.click();
-			cursor.hijacker.focus();
+			cursor.getHijacker().click();
+			cursor.getHijacker().focus();
 			cursor.preventUntarget = true;
 
 			scrollIntoViewIfNeeded( cursor.targetCharNode );
@@ -352,6 +393,20 @@
 		isReady: function(){
 			return cursor.targetCharNode;
 		},
+
+		// getEditor, gets the editor of the cursor.
+		getEditor: function(){
+			var s = cursor.targetCharNode;
+			while ( s !== null && !s.goofyTextInitialized ){s=s.parentNode}
+			return s;
+		},
+
+		// getHijacker, gets the hijacker for the current cursor location.
+		getHijacker: function(){
+			var ed = cursor.getEditor();
+			if (ed) return ed.hijacker;
+		},
+
 		putNode: function(node){
 			if (cursor.targetCharNode.forceRight){
 				// Put the new node AFTER the targetCharNode, and target the new node.
@@ -579,34 +634,10 @@
 	 ****************************************
 	 ****************************************/
 
-	on.call(cursor.hijacker, 'keydown', cursor.keydown);
-
 	on.call(document, 'click', function(){
 	 	cursor.untarget();
 	});
 
-	if (cursor.hijacker.oninput !== undefined){
-	on.call(cursor.hijacker, 'input', function(){
-		cursor.processHijacker();
-	});
-
-	} else {
-		on.call(cursor.hijacker, 'keydown', function(){
-			setTimeout( cursor.processHijacker, 5);
-		});
-	}
-
-	cursor.hijacker.style.position='absolute';
-	cursor.hijacker.style.left='0px';
-	cursor.hijacker.style.top='0px';
-	cursor.hijacker.style.width='10px';
-	cursor.hijacker.style.height='10px';
-	cursor.hijacker.style.padding='0px';
-	cursor.hijacker.style.border='0px';
-	cursor.hijacker.style.margin='0px';
-	cursor.hijacker.style.overflow='hidden';
-	cursor.hijacker.style.backgroundColor='red'; // FIXME
-	document.body.appendChild(cursor.hijacker);
 
 	// Debugging info-- cut from builds
 	if (true){
@@ -617,7 +648,7 @@
 
 		// Other debug junk
 
-		h = cursor.hijacker;
+		h = cursor.getHijacker();
 
 
 	}
