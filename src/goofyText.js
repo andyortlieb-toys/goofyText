@@ -313,6 +313,7 @@
 				cursor.targetEditor.insertBefore( cursor.blinker, cursor.targetEditor.firstChild );
 
 				cursor.blinker.style.top=''+y+'px';
+				cursor.blinker.style.height=''+ cursor.targetCharNode.offsetHeight +'px';
 
 				if (cursor.targetCharNode.forceRight){
 					//cursor.targetCharNode.style.borderRightColor = cursor.nextColor;
@@ -337,32 +338,12 @@
 				// It is the same. just switch sides. (unless it's being set)
 				forceRight = !cursor.targetCharNode.forceRight;
 			}
-			cursor.relieve(cursor.targetCharNode);
 
 			cursor.targetCharNode = chrNode;
 			cursor.targetEditor = cursor.getEditor(chrNode);
 
 			// FIXME: Stupid stupid hack for ie7.
 			cursor.targetCharNode.style.backgroundColor = cursor.targetCharNode.style.backgroundColor||'transparent';
-
-			/*if (forceRight){
-				// Put the cursor to the right of chrNode.
-				// Style the targetCharNode
-				cursor.targetCharNode.style.borderRightWidth='2px';
-				cursor.targetCharNode.style.borderRightStyle='solid';
-				cursor.targetCharNode.style.borderRightColor='black';
-				cursor.targetCharNode.style.marginRight='-2px';
-				cursor.targetCharNode.forceRight = true;
-
-			} else {
-				// Put the cursor to the left of chrNode.
-				// Style the targetCharNode
-				cursor.targetCharNode.style.borderLeftWidth='2px';
-				cursor.targetCharNode.style.borderLeftStyle='solid';
-				cursor.targetCharNode.style.borderLeftColor='black';
-				cursor.targetCharNode.style.marginLeft='-2px';
-				cursor.targetCharNode.forceRight = false;
-			}*/
 
 			cursor.targetCharNode.forceRight = forceRight;
 
@@ -380,26 +361,10 @@
 				return;
 			}
 			if (!cursor.targetCharNode || !cursor.targetCharNode.style) return ;
-			cursor.relieve(cursor.targetCharNode);
 
 			cursor.targetCharNode = null;
 		},
-		relieve: function(node){
-			if (node){
-				node.forceRight = false;
-				if  (node.style){
-					// Clear all the styles.
-					node.style.borderRightWidth='';
-					node.style.borderRightStyle='';
-					node.style.borderRightColor='';
-					node.style.marginRight='';
-					node.style.borderLefttWidth='';
-					node.style.borderLeftStyle='';
-					node.style.borderLeftColor='';
-					node.style.marginLeft='';
-				}
-			}
-		},
+
 
 		// isReady, whether or not the cursor is ready to handle keys
 		isReady: function(){
