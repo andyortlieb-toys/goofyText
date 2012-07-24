@@ -590,12 +590,7 @@
 
 					break;
 			}
-
 		}
-
-
-
-
 	};
 
 	function editor(){
