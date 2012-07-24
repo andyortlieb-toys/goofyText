@@ -43,32 +43,24 @@
 
 			// Bottoms are above Tops
 			if ( aBot < bTop || bBot < aTop ) {
-				console.log("a");
 				return false;
 			}
 
 			// Tops are below bottoms...
 			if ( aTop > bBot || bTop > aBot ) {
-				console.log("b");
 				return false;
 			}
 
 			// If tops equal bottoms... their bottoms better also.
 			if ( aTop === bBot ){
-				console.log("c");
 				return ( aBot === bBot )
 			}
 			if ( bTop === aBot ){
-				console.log("d");
 				return ( bBot === aBot );
 			}
 
-
 			// Find the things that make it so...
-
 			return true;
-
-
 		}
 
 		return false;
@@ -113,7 +105,8 @@
 	 */
 	 // FIXME: This needs some TLC... it doesn't work.
 	function scrollIntoViewIfNeeded (node){
-		//console.log("scrollIntoViewIfNeeded", node);
+
+		// Use native method in Chrome.
 		if (node.scrollIntoViewIfNeeded) return node.scrollIntoViewIfNeeded();
 
 		// FIXME: Awful awful in IE, Firefox, bleah
@@ -287,8 +280,7 @@
 			cursor.cycleTimeout = setTimeout( cursor.cycle, update?960:480 );
 		},
 		// Method target puts a cursor around a chrNode
-		target: function(chrNode,forceRight){
-			console.log('k', k=chrNode);
+		target: function(chrNode,forceRight,passiveX){
 			if (cursor.targetCharNode !== chrNode){
 				cursor.untarget(cursor.targetCharNode);
 			} else if (forceRight === undefined){
@@ -391,7 +383,6 @@
 								&& ieProblem
 								&& lastCharPut
 								&& text.charAt(i)==='\n'){
-					console.log("Continuing")
 					lastCharPut = false;
 					continue
 				}
