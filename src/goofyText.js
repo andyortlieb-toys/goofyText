@@ -215,7 +215,6 @@
 
 	function mkHijacker(){
 		var hijacker = document.createElement('textarea');
-		var hijackWrapper = document.createElement('div');
 
 		on.call(hijacker, 'keydown', cursor.keydown);
 
@@ -243,10 +242,7 @@
 		hijacker.style.overflow='hidden';
 		hijacker.style.backgroundColor='red'; // FIXME
 
-		hijackWrapper.appendChild(hijacker);
-		hijackWrapper.hijacker = hijacker;
-
-		return hijackWrapper;
+		return hijacker;
 
 	};
 
@@ -267,8 +263,7 @@
 			console.log("STUB: Search for the last place a cursor could go before this point.");
 		})
 
-		node.hijackerWrapper = mkHijacker(node);
-		node.hijacker = node.hijackerWrapper.hijacker;
+		node.hijacker = mkHijacker(node);
 		node.appendChild(node.hijacker);
 
 		return node;
