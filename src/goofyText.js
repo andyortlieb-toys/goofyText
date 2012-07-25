@@ -337,7 +337,7 @@
 			cursor.cycleTimeout = setTimeout( cursor.cycle, update?960:480 );
 		},
 		// Method target puts a cursor around a chrNode
-		target: function(chrNode,forceRight,passiveX){
+		target: function(chrNode,forceRight){
 			if (cursor.targetCharNode !== chrNode){
 				cursor.untarget(cursor.targetCharNode);
 			} else if (forceRight === undefined){
