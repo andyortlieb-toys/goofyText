@@ -129,6 +129,7 @@
 		}
 
 		chrNode.goofyTextChr = true;
+		chrNode.goofyTextDeletable = true;
 		// It Might makes sense to refactor this.  if we start calling .click() at any point.
 		on.call(chrNode, 'click', function(){
 			cursor.target(chrNode);
@@ -437,10 +438,12 @@
 
 					if (cursor.targetCharNode.forceRight){
 						var removeGuy = cursor.targetCharNode;
-						cursor.target(cursor.targetCharNode.nextSibling||cursor.targetCharNode.previousSibling, !cursor.targetCharNode.nextSibling);
-						removeGuy.parentNode.removeChild(removeGuy);
+						if (removeGuy.goofyTextDeletable){
+							cursor.target(cursor.targetCharNode.nextSibling||cursor.targetCharNode.previousSibling, !cursor.targetCharNode.nextSibling);
+							removeGuy.parentNode.removeChild(removeGuy);
+						}
 					} else {
-						if (cursor.targetCharNode.previousSibling){
+						if (cursor.targetCharNode.previousSibling && cursor.targetCharNode.previousSibling.goofyTextDeletable){
 							cursor.targetCharNode.parentNode.removeChild(cursor.targetCharNode.previousSibling)
 						}
 					}
@@ -559,11 +562,15 @@
 
 				case 46: // del
 					if (cursor.targetCharNode.forceRight){
-						if (cursor.targetCharNode.nextSibling){ cursor.targetCharNode.parentNode.removeChild(cursor.targetCharNode.nextSibling)}
+						if (cursor.targetCharNode.nextSibling && cursor.targetCharNode.nextSibling.goofyTextDeletable){
+							cursor.targetCharNode.parentNode.removeChild(cursor.targetCharNode.nextSibling)
+						}
 					} else {
 						var removeGuy = cursor.targetCharNode;
-						cursor.target(cursor.targetCharNode.nextSibling || cursor.targetCharNode.previousSibling);
-						cursor.targetCharNode.parentNode.removeChild(removeGuy)
+						if (removeGuy.goofyTextDeletable){
+							cursor.target(cursor.targetCharNode.nextSibling || cursor.targetCharNode.previousSibling);
+							cursor.targetCharNode.parentNode.removeChild(removeGuy)
+						}
 					}
 
 
