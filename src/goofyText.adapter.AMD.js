@@ -1,13 +1,13 @@
 define(function(require){
-	require('./goofyText');
+	require('./goofyTextBase');
 	var goofyTextRef = goofyText;
-	
-	try { 
-		delete goofyText; 
+
+	try {
+		delete goofyText;
 	} catch(e){
 		goofyText = undefined;
 	}
-	
+
 	return {
 		goofyText: goofyTextRef
 		,editor: goofyTextRef.editor
