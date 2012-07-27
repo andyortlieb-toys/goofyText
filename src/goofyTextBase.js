@@ -367,6 +367,7 @@
 				cursor.preventUntarget = false;
 				return;
 			}
+			if (cursor.blinker.parentNode) cursor.blinker.parentNode.removeChild(cursor.blinker);
 			if (!cursor.targetCharNode || !cursor.targetCharNode.style) return ;
 
 			cursor.targetCharNode = null;
