@@ -33,7 +33,7 @@
 
 			// If tops equal bottoms... their bottoms better also.
 			if ( aTop === bBot ){
-				return ( aBot === bBot )
+				return ( aBot === bBot );
 			}
 			if ( bTop === aBot ){
 				return ( bBot === aBot );
@@ -47,43 +47,43 @@
 	}
 
 	/**
-	 * private method on
-	 * enables events, intended for DOM objects.
-	 */
+	* private method on
+	* enables events, intended for DOM objects.
+	*/
 	function on(evtName, callBack){
 
 		if (this.addEventListener){
-			return this.addEventListener(evtName, callBack)
+			return this.addEventListener(evtName, callBack);
 
 		} else if (this.attachEvent){
-			return this.attachEvent('on'+evtName, callBack)
+			return this.attachEvent('on'+evtName, callBack);
 
 		} else {
-			throw "Unable to attach event."
+			throw "Unable to attach event.";
 		}
 	}
 
 	/**
-	 * private method off
-	 * disables events, intended for DOM objects.
-	 */
+	* private method off
+	* disables events, intended for DOM objects.
+	*/
 	function off(evtName, callBack){
 		if (this.removeEventListener){
-			return this.removeEventListener(evtName, callBack)
+			return this.removeEventListener(evtName, callBack);
 
 		} else if (this.detachEvent){
-			return this.detachEvent('on'+evtName, callBack)
+			return this.detachEvent('on'+evtName, callBack);
 
 		} else {
-			throw "Unable to attach event."
+			throw "Unable to attach event.";
 		}
 	}
 
 	/**
-	 * Cross platform, detection of cursor location relative to scrollable parents.
-	 * if not visibile by user, scroll into view.
-	 */
-	 // FIXME: This needs some TLC... it doesn't work.
+	* Cross platform, detection of cursor location relative to scrollable parents.
+	* if not visibile by user, scroll into view.
+	*/
+	// FIXME: This needs some TLC... it doesn't work.
 	function scrollIntoViewIfNeeded (node){
 
 		// Use native method in Chrome.
@@ -96,10 +96,10 @@
 
 
 	/**
-	 * Creates a char element
-	 */
+	* Creates a char element
+	*/
 	function mkCharNode (character){
-		var chrNode = document.createElement('span')
+		var chrNode = document.createElement('span');
 
 		if ( character ==='\n' ) {
 
@@ -139,13 +139,13 @@
 	}
 
 	/**
-	 * getOriginalContent yanks all the text out of something
-	 */
+	* getOriginalContent yanks all the text out of something
+	*/
 	function getOriginalContent(node){
 
 		var placeHolder	= document.createElement('div');
-		var throwAway 	= document.createElement('div');
-		var chr 		= null;
+		var throwAway	= document.createElement('div');
+		var chr			= null;
 
 		while (node.childNodes.length){
 			var cNode = node.childNodes[0];
@@ -163,7 +163,7 @@
 						chr = mkCharNode(cNode.nodeValue.charAt(i));
 
 					} else {
-						throw "What am I supposed to do?"
+						throw "What am I supposed to do?";
 					}
 
 					placeHolder.appendChild(chr);
@@ -181,8 +181,8 @@
 	}
 
 	/**
-	 * function setContent sets the content from text
-	 */
+	* function setContent sets the content from text
+	*/
 	function setContent(node, content){
 		if (!content) return node;
 
@@ -207,7 +207,7 @@
 		} else {
 			on.call(hijacker, 'keydown', function(){
 				setTimeout( function(){
-					cursor.processHijacker(hijacker)
+					cursor.processHijacker(hijacker);
 				}, 5);
 			});
 		}
@@ -243,14 +243,14 @@
 		return hijacker;
 
 
-	};
+	}
 
 
 	function initializeNode(node){
 		if (node.goofyTextInitialized){ return; }
 		node.goofyTextInitialized = true;
 
-		node.style.position='relative'
+		node.style.position='relative';
 
 		var originalContent = getOriginalContent(node);
 		node.innerHTML = '';
@@ -262,7 +262,7 @@
 				return;
 			}*/
 			console.log("STUB: Search for the last place a cursor could go before this point.");
-		})
+		});
 
 		node.hijacker = mkHijacker(node);
 		node.insertBefore(node.hijacker.wrapper, node.firstChild);
@@ -284,9 +284,9 @@
 		//processHijacker...
 		processHijacker: function(){
 			var hijacker = cursor.targetEditor.hijacker;
-		 	var buffer = hijacker.value;
-		 	hijacker.value='';
-		 	cursor.putText(buffer);
+			var buffer = hijacker.value;
+			hijacker.value='';
+			cursor.putText(buffer);
 		},
 		// The next color of the cursor:
 		nextColor: 'black',
@@ -382,7 +382,7 @@
 		// getEditor, gets the editor of the cursor.
 		getEditor: function(){
 			var s = cursor.targetCharNode;
-			while ( s !== null && !s.goofyTextInitialized ){s=s.parentNode}
+			while ( s !== null && !s.goofyTextInitialized ){s=s.parentNode;}
 			return s;
 		},
 
@@ -399,7 +399,7 @@
 			} else {
 				// Business as usual.
 				cursor.targetCharNode.parentNode.insertBefore(node, cursor.targetCharNode);
-				cursor.cycle(true)
+				cursor.cycle(true);
 
 			}
 			scrollIntoViewIfNeeded(node);
@@ -411,14 +411,11 @@
 		},
 		putText: function(text){
 			var ieProblem = !!window.attachEvent; // Detect the ie problem.
-			var lastCharPut=false
+			var lastCharPut=false;
 			for (var i=0; i<text.length; ++i){
-				if (			i>1 // Text was probably pasted.
-								&& ieProblem
-								&& lastCharPut
-								&& text.charAt(i)==='\n'){
+				if ( i>1 /* probably pasted */ && ieProblem && lastCharPut && text.charAt(i)==='\n' ){
 					lastCharPut = false;
-					continue
+					continue;
 				}
 				lastCharPut = true;
 				cursor.putChar(text.charAt(i));
@@ -430,22 +427,24 @@
 		keydown: function (evt){
 			if (!cursor.isReady()) return;
 
-			var evt = evt || window.event
-			var chr = String.fromCharCode(evt.keyCode)
+			evt = evt || window.event;
+			var chr = String.fromCharCode(evt.keyCode);
+			var search;
+			var removeGuy;
 
 
 			switch (evt.keyCode){
 				case 8: // backspace
 
 					if (cursor.targetCharNode.forceRight){
-						var removeGuy = cursor.targetCharNode;
+						removeGuy = cursor.targetCharNode;
 						if (removeGuy.goofyTextDeletable){
 							cursor.target(cursor.targetCharNode.nextSibling||cursor.targetCharNode.previousSibling, !cursor.targetCharNode.nextSibling);
 							removeGuy.parentNode.removeChild(removeGuy);
 						}
 					} else {
 						if (cursor.targetCharNode.previousSibling && cursor.targetCharNode.previousSibling.goofyTextDeletable){
-							cursor.targetCharNode.parentNode.removeChild(cursor.targetCharNode.previousSibling)
+							cursor.targetCharNode.parentNode.removeChild(cursor.targetCharNode.previousSibling);
 						}
 					}
 
@@ -465,7 +464,6 @@
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
 					return false;
-					break;
 
 /*				case 32: // space
 					// Stupid thing to stop the browser from scrolling downward.
@@ -478,11 +476,11 @@
 					break;*/
 
 				case 35: // End
-					var search = cursor.targetCharNode;
+					search = cursor.targetCharNode;
 
 					// Find the thing we want to hit... on the same line.
 					while (sameLattitude(cursor.targetCharNode, search.nextSibling)){
-						search=search.nextSibling
+						search=search.nextSibling;
 					}
 
 					// Find the last one, and force the cursor to the right of it.
@@ -491,14 +489,13 @@
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
 					return false;
-					break;
 
 				case 36: // Home
-					var search = cursor.targetCharNode;
+					search = cursor.targetCharNode;
 
 					// Find the thing we want to hit... on the same line.
 					while ( sameLattitude(cursor.targetCharNode, search.previousSibling) ){
-						search=search.previousSibling
+						search=search.previousSibling;
 					}
 
 
@@ -508,11 +505,10 @@
 					evt.keyCode = 0; // The less obvious approach
 					if (evt.preventDefault) evt.preventDefault(); // the more obvious approach
 					return false;
-					break;
 
 				case 37: // left
 
-					var search = cursor.targetCharNode;
+					search = cursor.targetCharNode;
 
 
 					while (search !== null){
@@ -534,11 +530,10 @@
 					if (evt.preventDefault){ evt.preventDefault(); }
 
 					return false;
-					break;
 
 				case 39: // right
 					// Find the next place to the right that a cursor could be.
-					var search = cursor.targetCharNode;
+					search = cursor.targetCharNode;
 
 					while (search !== null){
 						search = search.nextSibling;
@@ -559,18 +554,17 @@
 					if (evt.preventDefault){ evt.preventDefault(); }
 
 					return false;
-					break;
 
 				case 46: // del
 					if (cursor.targetCharNode.forceRight){
 						if (cursor.targetCharNode.nextSibling && cursor.targetCharNode.nextSibling.goofyTextDeletable){
-							cursor.targetCharNode.parentNode.removeChild(cursor.targetCharNode.nextSibling)
+							cursor.targetCharNode.parentNode.removeChild(cursor.targetCharNode.nextSibling);
 						}
 					} else {
-						var removeGuy = cursor.targetCharNode;
+						removeGuy = cursor.targetCharNode;
 						if (removeGuy.goofyTextDeletable){
 							cursor.target(cursor.targetCharNode.nextSibling || cursor.targetCharNode.previousSibling);
-							cursor.targetCharNode.parentNode.removeChild(removeGuy)
+							cursor.targetCharNode.parentNode.removeChild(removeGuy);
 						}
 					}
 
@@ -602,20 +596,19 @@
 	}
 
 	// Public declarations:
-	window['goofyText'] = {};
-	window['goofyText']['editor'] = editor;
+	goofyText = {editor:editor};
 
 
 	/****************************************
-	 ****************************************
+	****************************************
 
 				One-time setup
 
-	 ****************************************
-	 ****************************************/
+	****************************************
+	****************************************/
 
 	on.call(document, 'click', function(){
-	 	cursor.untarget();
+		cursor.untarget();
 	});
 
 
